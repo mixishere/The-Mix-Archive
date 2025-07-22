@@ -43,6 +43,36 @@
     proto.style = "margin-top: 20px; color: #cc66ff; font-family: monospace;";
     document.getElementById("labsGUI")?.appendChild(proto);
 
+    // 🖥️ Mini Console Panel
+    const input = document.createElement("input");
+    input.placeholder = "Type command...";
+    input.style = "margin-top: 20px; width: 100%; font-family: monospace;";
+    input.onkeydown = (e) => {
+        if (e.key === "Enter") {
+            console.log(`🧪 [Labs Console] Command received: ${input.value}`);
+            input.value = "";
+        }
+    };
+    document.getElementById("labsGUI")?.appendChild(input);
+
+    // 🧬 Mutation Button
+    const mutateBtn = document.createElement("button");
+    mutateBtn.textContent = "Run Mutation";
+    mutateBtn.style = "margin-top: 10px; background:#ff4444; color:#fff; font-family: monospace;";
+    mutateBtn.onclick = () => {
+        document.querySelectorAll("button").forEach(btn => {
+            btn.style.background = "#000";
+            btn.style.color = "#ff4444";
+        });
+    };
+    document.getElementById("labsGUI")?.appendChild(mutateBtn);
+
+    // 🌌 Midnight Lore Echo
+    const now = new Date();
+    if (now.getHours() === 0) {
+        console.log("🌌 [Labs] Midnight echo detected...\nThe archive remembers what Mix forgot.");
+    }
+
     // 💾 Lore Trigger: Press 5
     window.addEventListener("keydown", (e) => {
         if (e.key === "5") {
