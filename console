@@ -1,5 +1,5 @@
 // Project Aurora: Console Module
-// Status: Reactive | Mutation-Linked | Architect: Mix
+// Status: Reactive | Architect: Mix
 
 (() => {
     const viewer = document.getElementById("consoleGUI");
@@ -10,9 +10,9 @@
     input.placeholder = "Type command: run:, sig:, key:...";
     input.style = `
         width: 90%; padding: 10px; margin-top: 10px;
-        background: #000; color: #00ff88; border: 2px solid #00ff88;
-        font-family: monospace; font-size: 14px;
-        border-radius: 8px;
+        background: #000; color: #00ff88;
+        border: 2px solid #00ff88; font-family: monospace;
+        font-size: 14px; border-radius: 8px;
     `;
     viewer.appendChild(input);
     input.focus();
@@ -22,24 +22,34 @@
         if (e.key === "Enter") {
             const val = input.value.trim();
             input.value = "";
+
+            console.log(`🧠 [Console] Received: ${val}`);
             logEvent(`console received: ${val}`);
 
             if (val.startsWith("run:")) {
                 const glitch = val.slice(4);
                 logEvent(`lab:${glitch} activated`);
-                scanCodesForMatch(glitch); // optional — match against /codes
-                // applyMutation(glitch); // optional — trigger glitch visuals
+                if (typeof scanCodesForMatch === "function") scanCodesForMatch(glitch);
             } else if (val.startsWith("sig:")) {
                 const sig = val.slice(4);
                 logEvent(`echo signal received: ${sig}`);
-                // echoSignal(sig); // optional — recursive playback
             } else if (val.startsWith("key:")) {
                 const key = val.slice(4);
                 logEvent(`key breach triggered: ${key}`);
-                // triggerLore(key); // optional — lore unlock
             } else {
                 logEvent(`unrecognized command: ${val}`);
             }
+
+            // Optional: Visual feedback
+            const echo = document.createElement("div");
+            echo.textContent = `🧬 Activated: ${val}`;
+            echo.style = `
+                margin-top: 10px; padding: 6px;
+                background: #00ff8822; color: #fff;
+                font-family: monospace; font-size: 13px;
+                border-left: 4px solid #00ff88;
+            `;
+            viewer.appendChild(echo);
         }
     });
 
