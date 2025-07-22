@@ -1,13 +1,23 @@
 (function () {
-    // 🖱️ Make viewers draggable
+    // 🖱️ Make viewers draggable only from edges
     function makeDraggable(el) {
         let isDragging = false, offsetX, offsetY;
 
         el.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            offsetX = e.clientX - el.offsetLeft;
-            offsetY = e.clientY - el.offsetTop;
-            el.style.cursor = "move";
+            const bounds = el.getBoundingClientRect();
+            const edgeSize = 10;
+
+            const isNearLeft = e.clientX - bounds.left <= edgeSize;
+            const isNearRight = bounds.right - e.clientX <= edgeSize;
+            const isNearTop = e.clientY - bounds.top <= edgeSize;
+            const isNearBottom = bounds.bottom - e.clientY <= edgeSize;
+
+            if (isNearLeft || isNearRight || isNearTop || isNearBottom) {
+                isDragging = true;
+                offsetX = e.clientX - el.offsetLeft;
+                offsetY = e.clientY - el.offsetTop;
+                el.style.cursor = "move";
+            }
         });
 
         document.addEventListener("mouseup", () => {
@@ -36,7 +46,7 @@
         document.body.appendChild(tabBar);
     }
 
-    // Utility to create tab + viewer (with draggable support)
+    // Create tab + viewer
     function createAuroraTab({ id, label, color, fileURL, posLeft, posTop }) {
         const viewer = document.createElement("div");
         viewer.id = `${id}GUI`;
@@ -49,7 +59,7 @@
             display: none;
         `;
         document.body.appendChild(viewer);
-        makeDraggable(viewer); // 🖱️ Enable dragging
+        makeDraggable(viewer);
 
         const tabBtn = document.createElement("button");
         tabBtn.textContent = label;
@@ -78,53 +88,34 @@
         tabBar.appendChild(tabBtn);
     }
 
-    // 💾 Disk tab
+    // Tabs
     createAuroraTab({
-        id: "disk",
-        label: "💾 disk",
-        color: "#ff77e9",
+        id: "disk", label: "💾 disk", color: "#ff77e9",
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk",
-        posLeft: 100,
-        posTop: 100
+        posLeft: 100, posTop: 100
     });
 
-    // 🧪 Labs tab stacked below disk
     createAuroraTab({
-        id: "labs",
-        label: "🧪 labs",
-        color: "#cc66ff",
+        id: "labs", label: "🧪 labs", color: "#cc66ff",
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/labs",
-        posLeft: 100,
-        posTop: 550
+        posLeft: 100, posTop: 550
     });
 
-    // 🎮 Clickr tab
     createAuroraTab({
-        id: "clickr",
-        label: "🎮 clickr",
-        color: "#00ffff",
+        id: "clickr", label: "🎮 clickr", color: "#00ffff",
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr",
-        posLeft: 750,
-        posTop: 100
+        posLeft: 750, posTop: 100
     });
 
-    // 🧠 Console tab
     createAuroraTab({
-        id: "console",
-        label: "🧠 console",
-        color: "#00ff88",
+        id: "console", label: "🧠 console", color: "#00ff88",
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/console",
-        posLeft: 1400,
-        posTop: 100
+        posLeft: 1400, posTop: 100
     });
 
-    // 🖤 Dread tab
     createAuroraTab({
-        id: "dread",
-        label: "🖤 dread",
-        color: "#ff4444",
+        id: "dread", label: "🖤 dread", color: "#ff4444",
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/dread",
-        posLeft: 2100,
-        posTop: 100
+        posLeft: 2100, posTop: 100
     });
 })();
