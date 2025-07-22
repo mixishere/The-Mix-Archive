@@ -5,6 +5,7 @@
 (function () {
     console.log("🧪 Labs Module Activated");
 
+    // Glitch logs
     const experiments = [
         "Glitch protocol initialized...",
         "Signal distortion at 0.42Hz",
@@ -19,12 +20,49 @@
         }, i * 1000);
     });
 
-    // Placeholder for future experiments
+    // Sandbox prototype
     const sandbox = {
         prototype: "clickr-v2",
         status: "unstable",
         notes: "Requires memory patching"
     };
-
     console.log(`[Labs] Sandbox loaded: ${JSON.stringify(sandbox, null, 2)}`);
+
+    // 🧪 Glitch Mode Toggle
+    const glitchBtn = document.createElement("button");
+    glitchBtn.textContent = "Activate Glitch Mode";
+    glitchBtn.style = "margin-top: 10px; background:#cc66ff; color:#000; font-family: monospace;";
+    glitchBtn.onclick = () => {
+        document.body.style.background = "url('https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif')";
+    };
+    document.getElementById("labsGUI")?.appendChild(glitchBtn);
+
+    // 📦 Prototype Viewer
+    const proto = document.createElement("pre");
+    proto.textContent = "📦 Prototype: clickr-v2\nStatus: unstable\nMemory patching required.";
+    proto.style = "margin-top: 20px; color: #cc66ff; font-family: monospace;";
+    document.getElementById("labsGUI")?.appendChild(proto);
+
+    // 💾 Lore Trigger: Press 5
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "5") {
+            console.log("💾 [Labs] Signal echo detected...\nTab 5 was never meant to launch.");
+        }
+    });
+
+    // 🧠 Lore Trigger: Type 0802
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "0") {
+            window._mixCode = "0";
+        } else if (window._mixCode === "0" && e.key === "8") {
+            window._mixCode += "8";
+        } else if (window._mixCode === "08" && e.key === "0") {
+            window._mixCode += "0";
+        } else if (window._mixCode === "080" && e.key === "2") {
+            console.log("🧬 [Labs] Archive breach detected...\nCode 0802 matches origin timestamp.\nMix was here before the tabs.");
+            window._mixCode = "";
+        } else {
+            window._mixCode = "";
+        }
+    });
 })();
