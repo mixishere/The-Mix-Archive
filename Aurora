@@ -118,4 +118,10 @@
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/dread",
         posLeft: 2100, posTop: 100
     });
+
+    createAuroraTab({
+        id: "codes", label: "🔐 codes", color: "#f4f442",
+        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/codes",
+        posLeft: 750, posTop: 550  // right of Labs
+    });
 })();
