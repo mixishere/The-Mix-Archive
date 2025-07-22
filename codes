@@ -1,20 +1,17 @@
-// Mix Archive: Codes Vault
-// Status: Non-dev | Reactive | Lore-bound
+// Mix Archive: /codes
+// Status: Reactive | Highlighted | Mutation-Linked
 
 key:0802
-sig:dread-loop
+key:delta-sequence
 code:drift-logic
-flag:observer-mode
-tag:mutation-log
-
-// Notes
-- `key:0802` triggers lore breach sequence in Labs
-- `sig:dread-loop` activates echo in Console
-- `code:drift-logic` causes hue shift in Labs viewer
-- `flag:observer-mode` spawns floating eye icon
-- `tag:mutation-log` opens mutation history panel
-
-// Experimental
+code:observer-mode
+code:signal-echo
 code:glitch-seed
-code:note-fracture
-code:core-sample
+sig:dread-loop
+sig:console-breach
+sig:lab-flux
+tag:mutation:glitch
+tag:mutation:distort
+flag:labs:unstable
+flag:console:ready
+flag:archive:awake
