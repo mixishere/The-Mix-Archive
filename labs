@@ -1,0 +1,30 @@
+// Project Aurora: Labs Module
+// Status: Experimental
+// Architect: Mix
+
+(function () {
+    console.log("🧪 Labs Module Activated");
+
+    const experiments = [
+        "Glitch protocol initialized...",
+        "Signal distortion at 0.42Hz",
+        "Unstable tab detected: dread",
+        "Console echo loop: [REDACTED]",
+        "Mix Archive anomaly logged: July 22"
+    ];
+
+    experiments.forEach((log, i) => {
+        setTimeout(() => {
+            console.log(`[Labs] ${log}`);
+        }, i * 1000);
+    });
+
+    // Placeholder for future experiments
+    const sandbox = {
+        prototype: "clickr-v2",
+        status: "unstable",
+        notes: "Requires memory patching"
+    };
+
+    console.log(`[Labs] Sandbox loaded: ${JSON.stringify(sandbox, null, 2)}`);
+})();
