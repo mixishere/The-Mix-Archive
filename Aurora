@@ -70,4 +70,22 @@
         fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr",
         posLeft: 750
     });
+
+    // Add console tab
+    createAuroraTab({
+        id: "console",
+        label: "🧠 console",
+        color: "#00ff88",
+        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/console",
+        posLeft: 1400
+    });
+
+    // Add dread tab
+    createAuroraTab({
+        id: "dread",
+        label: "🖤 dread",
+        color: "#ff4444",
+        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/dread",
+        posLeft: 2100
+    });
 })();
