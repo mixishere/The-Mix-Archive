@@ -1,0 +1,26 @@
+// Project Aurora: Console Module
+// Created by Mix — the archive architect
+
+(function () {
+    const log = console.log;
+    log("🧠 Console module initialized.");
+    log("Type 'help()' for available commands.");
+
+    window.help = function () {
+        log("Available commands:");
+        log("- help(): Show this list");
+        log("- status(): Display system status");
+        log("- clear(): Clear the console");
+    };
+
+    window.status = function () {
+        log("Aurora Core: ONLINE");
+        log("Modules Loaded: disk, clickr, dread");
+        log("Memory Sync: ACTIVE");
+    };
+
+    window.clear = function () {
+        console.clear();
+        log("🧠 Console cleared.");
+    };
+})();
