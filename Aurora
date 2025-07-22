@@ -1,0 +1,73 @@
+(function () {
+    // Create or reuse the Aurora tab bar
+    let tabBar = document.getElementById("auroraTabs");
+    if (!tabBar) {
+        tabBar = document.createElement("div");
+        tabBar.id = "auroraTabs";
+        tabBar.style = `
+            position: fixed; top: 80px; left: 0; width: 80px;
+            background: #0d0d0d; padding-top: 20px;
+            border-right: 2px solid white; z-index: 10000;
+        `;
+        document.body.appendChild(tabBar);
+    }
+
+    // Utility to create tab + viewer
+    function createAuroraTab({ id, label, color, fileURL, posLeft }) {
+        const viewer = document.createElement("div");
+        viewer.id = `${id}GUI`;
+        viewer.style = `
+            position: fixed; top: 100px; left: ${posLeft}px; width: 600px; height: 400px;
+            background: #1e1e1e; color: ${color}; padding: 20px;
+            font-family: monospace; font-size: 14px;
+            border-radius: 12px; box-shadow: 0 0 20px ${color};
+            overflow: auto; white-space: pre-wrap; z-index: 9998;
+            display: none;
+        `;
+        document.body.appendChild(viewer);
+
+        const tabBtn = document.createElement("button");
+        tabBtn.textContent = label;
+        tabBtn.style = `
+            display: block; width: 60px; margin: 10px auto;
+            padding: 10px; font-size: 14px;
+            background: ${color}; color: #000;
+            border-radius: 10px; border: none;
+            font-family: 'Comfortaa', cursive;
+            cursor: pointer; box-shadow: 0 0 8px ${color};
+        `;
+        tabBtn.onclick = () => {
+            if (viewer.style.display === "none") {
+                viewer.textContent = `⏳ Loading ${label} code...`;
+                viewer.style.display = "block";
+
+                fetch(fileURL)
+                    .then(res => res.ok ? res.text() : Promise.reject("Failed to load"))
+                    .then(code => viewer.textContent = code)
+                    .catch(err => viewer.textContent = `❌ Error loading code: ${err}`);
+            } else {
+                viewer.style.display = "none";
+            }
+        };
+
+        tabBar.appendChild(tabBtn);
+    }
+
+    // Add disk tab
+    createAuroraTab({
+        id: "disk",
+        label: "💾 disk",
+        color: "#ff77e9",
+        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk",
+        posLeft: 100
+    });
+
+    // Add clickr tab
+    createAuroraTab({
+        id: "clickr",
+        label: "🎮 clickr",
+        color: "#00ffff",
+        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr",
+        posLeft: 750
+    });
+})();
