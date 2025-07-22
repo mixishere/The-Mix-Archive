@@ -1,4 +1,3 @@
 # dread
-just car axle client tweaked
-yo dread
-is in code
+just car axle client tweaked. 
+dread is in code.
