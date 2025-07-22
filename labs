@@ -13,7 +13,6 @@
         "Console echo loop: [REDACTED]",
         "Mix Archive anomaly logged: July 22"
     ];
-
     experiments.forEach((log, i) => {
         setTimeout(() => {
             console.log(`[Labs] ${log}`);
@@ -93,6 +92,35 @@
             window._mixCode = "";
         } else {
             window._mixCode = "";
+        }
+    });
+
+    // 🧪 Glitch Tag Detection
+    const glitchTags = [
+        "lab:echo-core",
+        "lab:glitch-seed",
+        "lab:syntax-ghost",
+        "lab:delta-swap",
+        "lab:observer-mode",
+        "lab:drift-logic",
+        "lab:trigger-0802",
+        "lab:note-fracture",
+        "lab:core-sample",
+        "lab:mutation-log"
+    ];
+    const viewer = document.getElementById("labsGUI");
+    const content = viewer?.textContent || "";
+    glitchTags.forEach(tag => {
+        if (content.includes(tag)) {
+            const glitch = document.createElement("div");
+            glitch.textContent = `🧬 Glitch Activated: ${tag}`;
+            glitch.style = `
+                margin-top: 10px; padding: 6px;
+                background: #cc66ff22; color: #fff;
+                font-family: monospace; font-size: 13px;
+                border-left: 4px solid #cc66ff;
+            `;
+            viewer.appendChild(glitch);
         }
     });
 })();
