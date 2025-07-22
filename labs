@@ -42,14 +42,38 @@
     proto.style = "margin-top: 20px; color: #cc66ff; font-family: monospace;";
     document.getElementById("labsGUI")?.appendChild(proto);
 
-    // 🖥️ Mini Console Panel
+    // 🖥️ Reactive Console Panel
     const input = document.createElement("input");
     input.placeholder = "Type command...";
     input.style = "margin-top: 20px; width: 100%; font-family: monospace;";
     input.onkeydown = (e) => {
         if (e.key === "Enter") {
-            console.log(`🧪 [Labs Console] Command received: ${input.value}`);
+            const val = input.value.trim();
             input.value = "";
+            console.log(`🧪 [Labs Console] Command received: ${val}`);
+            logEvent(`lab:${val} activated`);
+
+            // Scan /codes if available
+            if (typeof scanCodesForMatch === "function") {
+                scanCodesForMatch(val);
+            }
+
+            // Check local vault
+            if (window.labsVault?.[val]) {
+                logEvent(`labs vault matched: ${val}`);
+            }
+
+            // Visual feedback
+            const viewer = document.getElementById("labsGUI");
+            const echo = document.createElement("div");
+            echo.textContent = `🧬 Activated: ${val}`;
+            echo.style = `
+                margin-top: 10px; padding: 6px;
+                background: #cc66ff22; color: #fff;
+                font-family: monospace; font-size: 13px;
+                border-left: 4px solid #cc66ff;
+            `;
+            viewer?.appendChild(echo);
         }
     };
     document.getElementById("labsGUI")?.appendChild(input);
@@ -97,16 +121,9 @@
 
     // 🧪 Glitch Tag Detection
     const glitchTags = [
-        "lab:echo-core",
-        "lab:glitch-seed",
-        "lab:syntax-ghost",
-        "lab:delta-swap",
-        "lab:observer-mode",
-        "lab:drift-logic",
-        "lab:trigger-0802",
-        "lab:note-fracture",
-        "lab:core-sample",
-        "lab:mutation-log"
+        "lab:echo-core", "lab:glitch-seed", "lab:syntax-ghost", "lab:delta-swap",
+        "lab:observer-mode", "lab:drift-logic", "lab:trigger-0802",
+        "lab:note-fracture", "lab:core-sample", "lab:mutation-log"
     ];
     const viewer = document.getElementById("labsGUI");
     const content = viewer?.textContent || "";
