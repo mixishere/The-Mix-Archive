@@ -5,6 +5,7 @@
     viewer.textContent = "🧿 Core Theme Controller — select a theme to mutate Aurora.\n";
 
     const themes = {
+        original:   { bg: "#1e1e1e", accent: "#00ff88", text: "#ffffff" },
         midnight:   { bg: "#0a0f23", accent: "#00ffaa", text: "#e0f2ff" },
         glitch:     { bg: "#1e001e", accent: "#ff00ff", text: "#ffffff" },
         dread:      { bg: "#1a0000", accent: "#ff4444", text: "#ffcccc" },
@@ -16,6 +17,25 @@
         auroralux:  { bg: "#001f1f", accent: "#88ffcc", text: "#ffffff" }
     };
 
+    // 💾 Restore saved theme
+    const saved = localStorage.getItem("auroraTheme");
+    if (saved && themes[saved]) {
+        const { bg, accent, text } = themes[saved];
+        document.body.style.background = bg;
+        document.querySelectorAll("[id$='GUI']").forEach(view => {
+            view.style.background = bg;
+            view.style.color = text;
+            view.style.boxShadow = `0 0 20px ${accent}`;
+        });
+        document.querySelectorAll("button").forEach(b => {
+            b.style.background = accent;
+            b.style.color = bg;
+            b.style.boxShadow = `0 0 8px ${accent}`;
+        });
+        logEvent(`🧿 Theme restored: ${saved}`);
+    }
+
+    // 🎨 Theme buttons
     Object.entries(themes).forEach(([name, { bg, accent, text }]) => {
         const btn = document.createElement("button");
         btn.textContent = `Activate ${name}`;
@@ -37,6 +57,7 @@
                 b.style.color = bg;
                 b.style.boxShadow = `0 0 8px ${accent}`;
             });
+            localStorage.setItem("auroraTheme", name);
             logEvent(`🧿 Theme switched to ${name}`);
         };
         viewer.appendChild(btn);
