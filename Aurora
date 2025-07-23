@@ -1,5 +1,16 @@
 (function () {
-    // 🖱️ Make viewers draggable only from edges
+    // 🧠 Version Display
+    const versionLabel = document.createElement("div");
+    versionLabel.textContent = "Aurora v3.4-CoreOnly";
+    versionLabel.style = `
+        position: fixed; top: 40px; left: 0; width: 100%;
+        text-align: center; font-family: monospace;
+        font-size: 16px; color: #00ff88;
+        z-index: 10001;
+    `;
+    document.body.appendChild(versionLabel);
+
+    // 🖱️ Edge-Only Dragging
     function makeDraggable(el) {
         let isDragging = false, offsetX, offsetY;
         el.addEventListener("mousedown", (e) => {
@@ -30,19 +41,6 @@
         });
     }
 
-    // Create or reuse the Aurora tab bar
-    let tabBar = document.getElementById("auroraTabs");
-    if (!tabBar) {
-        tabBar = document.createElement("div");
-        tabBar.id = "auroraTabs";
-        tabBar.style = `
-            position: fixed; top: 80px; left: 0; width: 80px;
-            background: #0d0d0d; padding-top: 20px;
-            border-right: 2px solid white; z-index: 10000;
-        `;
-        document.body.appendChild(tabBar);
-    }
-
     // 📜 Live Logger
     function logEvent(entry) {
         const viewer = document.getElementById("logsGUI");
@@ -52,7 +50,7 @@
         viewer.scrollTop = viewer.scrollHeight;
     }
 
-    // 🧬 Create tab + viewer
+    // 🧬 Tab + Viewer Generator
     function createAuroraTab({ id, label, color, fileURL, posLeft, posTop }) {
         const viewer = document.createElement("div");
         viewer.id = `${id}GUI`;
@@ -84,8 +82,18 @@
                 fetch(fileURL)
                     .then(res => res.ok ? res.text() : Promise.reject("Failed to load"))
                     .then(code => {
-                        viewer.textContent = code;
                         logEvent(`${id} viewer opened`);
+                        if (id === "core") {
+                            try {
+                                eval(code); // ✅ Only core executes
+                            } catch (err) {
+                                viewer.textContent = `❌ Error running core: ${err}`;
+                                logEvent(`core execution failed`);
+                            }
+                        } else {
+                            viewer.textContent = code; // ❌ Display-only for others
+                            logEvent(`${id} viewer initialized (display only)`);
+                        }
                     })
                     .catch(err => viewer.textContent = `❌ Error loading code: ${err}`);
             } else {
@@ -93,37 +101,38 @@
             }
         };
 
-        tabBar.appendChild(tabBtn);
+        document.getElementById("auroraTabs").appendChild(tabBtn);
+    }
+
+    // 🧱 Tab Bar
+    let tabBar = document.getElementById("auroraTabs");
+    if (!tabBar) {
+        tabBar = document.createElement("div");
+        tabBar.id = "auroraTabs";
+        tabBar.style = `
+            position: fixed; top: 80px; left: 0; width: 80px;
+            background: #0d0d0d; padding-top: 20px;
+            border-right: 2px solid white; z-index: 10000;
+        `;
+        document.body.appendChild(tabBar);
     }
 
     // 🎯 Tab Definitions
-    createAuroraTab({ id: "disk", label: "💾 disk", color: "#ff77e9",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk",
-        posLeft: 100, posTop: 100 });
+    const tabs = [
+        { id: "disk", label: "💾 disk", color: "#ff77e9", posLeft: 100, posTop: 100 },
+        { id: "labs", label: "🧪 labs", color: "#cc66ff", posLeft: 100, posTop: 550 },
+        { id: "clickr", label: "🎮 clickr", color: "#00ffff", posLeft: 750, posTop: 100 },
+        { id: "console", label: "🧠 console", color: "#00ff88", posLeft: 1400, posTop: 100 },
+        { id: "logs", label: "📜 logs", color: "#ffaa00", posLeft: 1400, posTop: 550 },
+        { id: "codes", label: "🔐 codes", color: "#f4f442", posLeft: 750, posTop: 550 },
+        { id: "dread", label: "🖤 dread", color: "#ff4444", posLeft: 2100, posTop: 100 },
+        { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: 2100, posTop: 1000 }
+    ];
 
-    createAuroraTab({ id: "labs", label: "🧪 labs", color: "#cc66ff",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/labs",
-        posLeft: 100, posTop: 550 });
-
-    createAuroraTab({ id: "clickr", label: "🎮 clickr", color: "#00ffff",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr",
-        posLeft: 750, posTop: 100 });
-
-    createAuroraTab({ id: "console", label: "🧠 console", color: "#00ff88",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/console",
-        posLeft: 1400, posTop: 100 });
-
-    createAuroraTab({ id: "logs", label: "📜 logs", color: "#ffaa00",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/logs",
-        posLeft: 1400, posTop: 550 });
-
-    createAuroraTab({ id: "codes", label: "🔐 codes", color: "#f4f442",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/codes",
-        posLeft: 750, posTop: 550 });
-
-    createAuroraTab({ id: "dread", label: "🖤 dread", color: "#ff4444",
-        fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/dread",
-        posLeft: 2100, posTop: 100 });
+    tabs.forEach(tab => {
+        tab.fileURL = `https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/${tab.id}`;
+        createAuroraTab(tab);
+    });
 
     // 🫥 Stealth Toggle: Hide all viewers and tab bar with '\'
     window.addEventListener("keydown", (e) => {
