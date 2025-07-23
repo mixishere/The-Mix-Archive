@@ -5,10 +5,15 @@
     viewer.textContent = "🧿 Core Theme Controller — select a theme to mutate Aurora.\n";
 
     const themes = {
-        midnight: { bg: "#0a0f23", accent: "#00ffaa", text: "#e0f2ff" },
-        glitch: { bg: "#1e001e", accent: "#ff00ff", text: "#ffffff" },
-        dread: { bg: "#1a0000", accent: "#ff4444", text: "#ffcccc" },
-        synthwave: { bg: "#2b0033", accent: "#ff77e9", text: "#ffffff" }
+        midnight:   { bg: "#0a0f23", accent: "#00ffaa", text: "#e0f2ff" },
+        glitch:     { bg: "#1e001e", accent: "#ff00ff", text: "#ffffff" },
+        dread:      { bg: "#1a0000", accent: "#ff4444", text: "#ffcccc" },
+        synthwave:  { bg: "#2b0033", accent: "#ff77e9", text: "#ffffff" },
+        nebula:     { bg: "#0c002b", accent: "#9966ff", text: "#e6e6ff" },
+        terminal:   { bg: "#000000", accent: "#00ff00", text: "#ffffff" },
+        solarflare: { bg: "#3b1a00", accent: "#ffaa33", text: "#ffe8cc" },
+        iceborn:    { bg: "#e0f8ff", accent: "#00ccff", text: "#003344" },
+        auroralux:  { bg: "#001f1f", accent: "#88ffcc", text: "#ffffff" }
     };
 
     Object.entries(themes).forEach(([name, { bg, accent, text }]) => {
