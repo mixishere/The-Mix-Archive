@@ -1,5 +1,4 @@
 (function () {
-    // 🧠 Version Display
     const versionLabel = document.createElement("div");
     versionLabel.textContent = "Aurora v3.4-CoreOnly";
     versionLabel.style = `
@@ -10,7 +9,6 @@
     `;
     document.body.appendChild(versionLabel);
 
-    // 🖱️ Edge-Only Dragging
     function makeDraggable(el) {
         let isDragging = false, offsetX, offsetY;
         el.addEventListener("mousedown", (e) => {
@@ -41,7 +39,6 @@
         });
     }
 
-    // 📜 Live Logger
     function logEvent(entry) {
         const viewer = document.getElementById("logsGUI");
         if (!viewer) return;
@@ -50,7 +47,6 @@
         viewer.scrollTop = viewer.scrollHeight;
     }
 
-    // 🧬 Tab + Viewer Generator
     function createAuroraTab({ id, label, color, fileURL, posLeft, posTop }) {
         const viewer = document.createElement("div");
         viewer.id = `${id}GUI`;
@@ -85,13 +81,13 @@
                         logEvent(`${id} viewer opened`);
                         if (id === "core") {
                             try {
-                                eval(code); // ✅ Only core executes
+                                eval(code);
                             } catch (err) {
                                 viewer.textContent = `❌ Error running core: ${err}`;
                                 logEvent(`core execution failed`);
                             }
                         } else {
-                            viewer.textContent = code; // ❌ Display-only for others
+                            viewer.textContent = code;
                             logEvent(`${id} viewer initialized (display only)`);
                         }
                     })
@@ -104,7 +100,6 @@
         document.getElementById("auroraTabs").appendChild(tabBtn);
     }
 
-    // 🧱 Tab Bar
     let tabBar = document.getElementById("auroraTabs");
     if (!tabBar) {
         tabBar = document.createElement("div");
@@ -117,7 +112,6 @@
         document.body.appendChild(tabBar);
     }
 
-    // 🎯 Tab Definitions
     const tabs = [
         { id: "disk", label: "💾 disk", color: "#ff77e9", posLeft: 100, posTop: 100 },
         { id: "labs", label: "🧪 labs", color: "#cc66ff", posLeft: 100, posTop: 550 },
@@ -126,7 +120,8 @@
         { id: "logs", label: "📜 logs", color: "#ffaa00", posLeft: 1400, posTop: 550 },
         { id: "codes", label: "🔐 codes", color: "#f4f442", posLeft: 750, posTop: 550 },
         { id: "dread", label: "🖤 dread", color: "#ff4444", posLeft: 2100, posTop: 100 },
-        { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: 2100, posTop: 1000 }
+        { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: 2100, posTop: 1000 },
+        { id: "credits", label: "🎖️ credits", color: "#ffcc00", posLeft: 100, posTop: 1000 } // 👈 viewer under labs
     ];
 
     tabs.forEach(tab => {
@@ -134,7 +129,6 @@
         createAuroraTab(tab);
     });
 
-    // 🫥 Stealth Toggle: Hide all viewers and tab bar with '\'
     window.addEventListener("keydown", (e) => {
         if (e.key === "\\") {
             const viewers = document.querySelectorAll("[id$='GUI']");
