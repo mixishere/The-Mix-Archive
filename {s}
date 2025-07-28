@@ -1,0 +1,135 @@
+(function regenS() {
+  if (document.getElementById("s-ui")) return;
+
+  const glyphs = {
+    forgeframe: "ForgeFrame activated. Ready to build logic threads.",
+    glyphbinder: "GlyphBinder loaded. Assemble glyph protocols here.",
+    echoeditor: "EchoEditor online. Access and rewrite memory transmission.",
+    codelauncher: "CodeLauncher initiated. Ready to execute active thread.",
+    reset: "System reset. Glyph state restored.",
+    render: "Aurora {render} triggered.",
+    stealth: "Aurora {stealth} activated.",
+    glitch: "Aurora {glitch} injected.",
+    load: "Aurora {load} sequence started."
+  };
+
+  const bootSequence = ["render", "stealth", "glitch", "load"];
+  let bootProgress = [];
+
+  function checkBootSequence(glyph) {
+    const expected = bootSequence[bootProgress.length];
+    if (glyph === expected) {
+      bootProgress.push(glyph);
+      if (bootProgress.length === bootSequence.length) {
+        console.log("%c🌀 Aurora boot sequence complete. Executing aurora.js...", "color: lime; font-weight: bold");
+        const script = document.createElement("script");
+        script.src = "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/aurora.js";
+        document.body.appendChild(script);
+      }
+    } else {
+      bootProgress = [];
+      console.warn(`❌ Incorrect glyph order. Resetting boot sequence.`);
+    }
+  }
+
+  const shell = document.createElement("div");
+  shell.id = "s-ui";
+  shell.style = `
+    position:fixed;
+    top:30px; left:30px;
+    background:#111;
+    color:#fff;
+    padding:20px;
+    font-family:monospace;
+    z-index:9999;
+    border-radius:8px;
+    box-shadow:0 0 12px crimson;
+  `;
+
+  const title = document.createElement("h2");
+  title.textContent = "{s}";
+  title.style = "color:crimson; margin-top:0; text-shadow:0 0 5px crimson;";
+  shell.appendChild(title);
+
+  const output = document.createElement("div");
+  output.id = "s-output";
+  output.style = "margin-top:20px; color:gold; font-size:14px;";
+  output.textContent = "🧠 Awaiting glyph trigger...";
+  shell.appendChild(output);
+
+  const createButton = (key, color, action) => {
+    const btn = document.createElement("button");
+    btn.textContent = `{${key}}`;
+    btn.onclick = () => {
+      output.textContent = `[${key}] ${glyphs[key] || "Triggered"}`;
+      console.log(`%c[${key}] ${glyphs[key] || "Triggered"}`, `color: ${color}; font-weight: bold`);
+      if (action) action();
+    };
+    btn.style = `
+      background:crimson;
+      border:none;
+      color:white;
+      padding:8px 16px;
+      margin:6px;
+      border-radius:4px;
+      font-weight:bold;
+      cursor:pointer;
+    `;
+    btn.onmouseenter = () => (btn.style.background = "darkred");
+    btn.onmouseleave = () => (btn.style.background = "crimson");
+    return btn;
+  };
+
+  // Core glyphs
+  shell.appendChild(createButton("forgeframe", "turquoise"));
+  shell.appendChild(createButton("glyphbinder", "violet"));
+  shell.appendChild(createButton("echoeditor", "orange"));
+  shell.appendChild(createButton("codelauncher", "cyan", () => {
+    try {
+      new Function("console.log('🔧 Logic thread executed via CodeLauncher')")();
+    } catch (err) {
+      console.warn("CodeLauncher error:", err);
+    }
+  }));
+
+  // Reset glyph
+  shell.appendChild(createButton("reset", "crimson", () => {
+    output.textContent = "🧠 Awaiting glyph trigger...";
+    console.clear();
+    bootProgress = [];
+    console.log("%c{s} — System reset complete", "color: crimson; font-weight: bold");
+  }));
+
+  // Keypad grid
+  const keypad = document.createElement("div");
+  keypad.id = "s-keypad";
+  keypad.style = `
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px;
+    background: #222;
+    border-radius: 6px;
+    box-shadow: 0 0 6px crimson;
+  `;
+
+  const glyphKeys = [
+    "trace", "glyph", "echo",
+    "stealth", "glitch", "render",
+    "shift", "load", "pulse"
+  ];
+
+  glyphKeys.forEach(key => {
+    const action = bootSequence.includes(key)
+      ? () => checkBootSequence(key)
+      : null;
+
+    const btn = createButton(key, "cyan", action);
+    btn.textContent = key;
+    keypad.appendChild(btn);
+  });
+
+  shell.appendChild(keypad);
+  document.body.appendChild(shell);
+})();
