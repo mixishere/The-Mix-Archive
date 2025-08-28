@@ -222,6 +222,40 @@
       if (e.key === "\\") {
         stealthMode = !stealthMode;
 
+// 🛠 Devtools Summon/Dissolve
+let inputBuffer = [];
+
+window.addEventListener("keydown", (e) => {
+  inputBuffer.push(e.key);
+  if (inputBuffer.length > 3) inputBuffer.shift();
+
+  const sequence = inputBuffer.join("");
+
+  if (sequence === "505") {
+    const devtoolsTab = {
+      id: "devtools",
+      label: "🛠 devtools",
+      color: "#ccccff",
+      posLeft: 100,
+      posTop: 100,
+      fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/devtools"
+    };
+    createAuroraTab(devtoolsTab);
+    logEvent("🛠 Devtools summoned via 505");
+    inputBuffer = [];
+  }
+
+  if (sequence === "000") {
+    const devtoolsViewer = document.getElementById("devtoolsGUI");
+    const devtoolsButton = Array.from(document.querySelectorAll("button"))
+      .find(btn => btn.textContent === "🛠 devtools");
+    if (devtoolsViewer) devtoolsViewer.remove();
+    if (devtoolsButton) devtoolsButton.remove();
+    logEvent("🛠 Devtools dissolved via 000");
+    inputBuffer = [];
+  }
+});
+        
         const viewers = document.querySelectorAll("[id$='GUI']");
         const tabBar = document.getElementById("auroraTabs");
         const logs = document.getElementById("logsGUI");
