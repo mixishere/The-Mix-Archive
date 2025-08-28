@@ -97,6 +97,7 @@
         border-radius: 12px; box-shadow: 0 0 20px ${color};
         overflow: auto; white-space: pre-wrap; z-index: 9998;
         display: none;
+        transition: opacity 0.4s ease;
       `;
       document.body.appendChild(viewer);
       makeDraggable(viewer);
@@ -148,44 +149,62 @@
         position: fixed; top: 80px; left: 0; width: 80px;
         background: #0d0d0d; padding-top: 20px;
         border-right: 2px solid white; z-index: 10000;
+        transition: opacity 0.4s ease;
       `;
       document.body.appendChild(tabBar);
     }
 
+    const sharedLeft = 100;
+    const sharedTop = 100;
+
     const tabs = [
-      { id: "disk", label: "💾 disk", color: "#ff77e9", posLeft: 100, posTop: 100 },
-      { id: "labs", label: "🧪 labs", color: "#cc66ff", posLeft: 100, posTop: 550 },
-      { id: "clickr", label: "🎮 clickr", color: "#00ffff", posLeft: 750, posTop: 100 },
-      { id: "console", label: "🧠 console", color: "#00ff88", posLeft: 1400, posTop: 100 },
-      { id: "logs", label: "📜 logs", color: "#ffaa00", posLeft: 1400, posTop: 550 },
-      { id: "codes", label: "🔐 codes", color: "#f4f442", posLeft: 750, posTop: 550 },
-      { id: "dread", label: "🖤 dread", color: "#ff4444", posLeft: 2100, posTop: 100 },
-      { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: 2100, posTop: 1000 },
-      { id: "credits", label: "🎖️ credits", color: "#ffcc00", posLeft: 100, posTop: 1000 }
+      { id: "disk", label: "💾 disk", color: "#ff77e9", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "labs", label: "🧪 labs", color: "#cc66ff", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "clickr", label: "🎮 clickr", color: "#00ffff", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "console", label: "🧠 console", color: "#00ff88", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "logs", label: "📜 logs", color: "#ffaa00", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "dread", label: "🖤 dread", color: "#ff4444", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: sharedLeft, posTop: sharedTop },
+      { id: "credits", label: "🎖️ credits", color: "#ffcc00", posLeft: sharedLeft, posTop: sharedTop }
     ];
+
     tabs.forEach(tab => {
       tab.fileURL = `https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/${tab.id}`;
       createAuroraTab(tab);
     });
 
+    // 🔒 Stealth Mode v2
+    let stealthMode = false;
+
     window.addEventListener("keydown", (e) => {
       if (e.key === "\\") {
+        stealthMode = !stealthMode;
+
         const viewers = document.querySelectorAll("[id$='GUI']");
         const tabBar = document.getElementById("auroraTabs");
-        viewers.forEach(view => {
-          view.style.display = (view.style.display === "none") ? "block" : "none";
-        });
-        if (tabBar) {
-          tabBar.style.display = (tabBar.style.display === "none") ? "block" : "none";
-        }
         const logs = document.getElementById("logsGUI");
+
+        viewers.forEach(view => {
+          view.style.transition = "opacity 0.4s ease";
+          view.style.opacity = stealthMode ? "0" : "1";
+          view.style.pointerEvents = stealthMode ? "none" : "auto";
+        });
+
+        if (tabBar) {
+          tabBar.style.opacity = stealthMode ? "0" : "1";
+          tabBar.style.pointerEvents = stealthMode ? "none" : "auto";
+        }
+
         if (logs) {
+          logs.style.transition = "opacity 0.4s ease";
+          logs.style.opacity = stealthMode ? "0" : "1";
+          logs.style.pointerEvents = stealthMode ? "none" : "auto";
+
           const timestamp = new Date().toISOString();
-          logs.textContent += `[${timestamp}] 🔒 Stealth mode toggled (tabs + viewers)\n`;
+                   logs.textContent += `[${timestamp}] 🔒 Stealth mode ${stealthMode ? "enabled" : "disabled"}\n`;
           logs.scrollTop = logs.scrollHeight;
         }
       }
     });
   }
 })();
-``
