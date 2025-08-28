@@ -1,0 +1,74 @@
+// DevtoolsViewer.js
+
+let inputBuffer = [];
+
+function handleKey(e) {
+  inputBuffer.push(e.key);
+  if (inputBuffer.slice(-3).join("") === "505") {
+    summonDevtools();
+    inputBuffer = [];
+  }
+  if (inputBuffer.slice(-3).join("") === "000") {
+    dissolveDevtools();
+    inputBuffer = [];
+  }
+}
+
+window.addEventListener("keydown", handleKey);
+
+// Viewer logic
+function DevtoolsViewer({ archive }) {
+  const tabs = Object.values(archive);
+
+  return (
+    <div class="devtools">
+      <h2>Devtools</h2>
+      <ul>
+        {tabs.map(tab => (
+          <li key={tab.id}>
+            <strong>{tab.label}</strong> — {tab.id}
+            <br />
+            Position: ({tab.posLeft}, {tab.posTop})
+            <br />
+            Color: {tab.color}
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => downloadSnapshot(archive)}>Export Snapshot</button>
+    </div>
+  );
+}
+
+function downloadSnapshot(data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "aurora_snapshot.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Tab management
+function summonDevtools() {
+  if (!auroraTabs.find(tab => tab.id === "devtools")) {
+    auroraTabs.push({
+      id: "devtools",
+      label: "🛠 devtools",
+      color: "#ccccff",
+      posLeft: 120,
+      posTop: 80,
+      viewer: "DevtoolsViewer"
+    });
+  }
+}
+
+function dissolveDevtools() {
+  const index = auroraTabs.findIndex(tab => tab.id === "devtools");
+  if (index !== -1) {
+    auroraTabs.splice(index, 1);
+  }
+}
+
+// Register viewer
+viewerMap["devtools"] = DevtoolsViewer;
