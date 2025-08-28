@@ -1,11 +1,9 @@
 (function () {
-  // 🔍 Auto-skip Halo if already on Google
   if (location.hostname.includes("google")) {
     runAurora();
     return;
   }
 
-  // 🌟 HALO PROMPT
   const halo = document.createElement("div");
   halo.style = `
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -37,10 +35,9 @@
     runAurora();
   };
 
-  // 🧠 Core Aurora Logic
   function runAurora() {
     const versionLabel = document.createElement("div");
-    versionLabel.textContent = "Aurora v3.4-CoreOnly";
+    versionLabel.textContent = "Aurora v4-CoreOnly";
     versionLabel.style = `
       position: fixed; top: 40px; left: 0; width: 100%;
       text-align: center; font-family: monospace;
@@ -114,25 +111,58 @@
       `;
       tabBtn.onclick = () => {
         if (viewer.style.display === "none") {
-          viewer.textContent = `🔄 Initializing ${label}...`;
-          viewer.style.display = "block";
-          fetch(fileURL)
-            .then(res => res.ok ? res.text() : Promise.reject("Failed to load"))
-            .then(code => {
-              logEvent(`${id} viewer opened`);
-              if (id === "core") {
-                try {
-                  eval(code);
-                } catch (err) {
-                  viewer.textContent = `❌ Error running core: ${err}`;
-                  logEvent(`core execution failed`);
+          if (id === "plus") {
+            const tabOptions = allTabs.filter(t => t.id !== "plus");
+            const saved = JSON.parse(localStorage.getItem("auroraTabs")) || tabOptions.map(t => t.id);
+
+            viewer.innerHTML = `<div style="font-family: monospace; font-size: 14px; color: #ccc;">
+              <b>🌌 Tab Selector</b><br><br>
+              ${tabOptions.map(tab => `
+                <label style="display: block; margin-bottom: 8px;">
+                  <input type="checkbox" data-tab="${tab.id}" ${saved.includes(tab.id) ? "checked" : ""}>
+                  ${tab.label}
+                </label>
+              `).join("")}
+              <button id="saveTabs" style="
+                margin-top: 12px; padding: 8px 16px;
+                background: #66ffcc; color: #000;
+                border: none; border-radius: 6px;
+                font-family: 'Comfortaa', cursive;
+                cursor: pointer; box-shadow: 0 0 6px #66ffcc;
+              ">Save Selection</button>
+            </div>`;
+            viewer.style.display = "block";
+            logEvent("➕ tab opened — tab selector active");
+
+            document.getElementById("saveTabs").onclick = () => {
+              const selected = Array.from(viewer.querySelectorAll("input[type='checkbox']"))
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.tab);
+              localStorage.setItem("auroraTabs", JSON.stringify([...selected, "plus"]));
+              logEvent("➕ tab selection saved");
+              location.reload();
+            };
+          } else {
+            viewer.textContent = `🔄 Initializing ${label}...`;
+            viewer.style.display = "block";
+            fetch(fileURL)
+              .then(res => res.ok ? res.text() : Promise.reject("Failed to load"))
+              .then(code => {
+                logEvent(`${id} viewer opened`);
+                if (id === "core") {
+                  try {
+                    eval(code);
+                  } catch (err) {
+                    viewer.textContent = `❌ Error running core: ${err}`;
+                    logEvent(`core execution failed`);
+                  }
+                } else {
+                  viewer.textContent = code;
+                  logEvent(`${id} viewer initialized (display only)`);
                 }
-              } else {
-                viewer.textContent = code;
-                logEvent(`${id} viewer initialized (display only)`);
-              }
-            })
-            .catch(err => viewer.textContent = `❌ Error loading code: ${err}`);
+              })
+              .catch(err => viewer.textContent = `❌ Error loading code: ${err}`);
+          }
         } else {
           viewer.style.display = "none";
         }
@@ -157,19 +187,30 @@
     const sharedLeft = 100;
     const sharedTop = 100;
 
-    const tabs = [
-      { id: "disk", label: "💾 disk", color: "#ff77e9", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "labs", label: "🧪 labs", color: "#cc66ff", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "clickr", label: "🎮 clickr", color: "#00ffff", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "console", label: "🧠 console", color: "#00ff88", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "logs", label: "📜 logs", color: "#ffaa00", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "dread", label: "🖤 dread", color: "#ff4444", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "core", label: "🧿 core", color: "#00ffaa", posLeft: sharedLeft, posTop: sharedTop },
-      { id: "credits", label: "🎖️ credits", color: "#ffcc00", posLeft: sharedLeft, posTop: sharedTop }
+    const allTabs = [
+      { id: "disk", label: "💾 disk", color: "#ff77e9" },
+      { id: "labs", label: "🧪 labs", color: "#cc66ff" },
+      { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
+      { id: "console", label: "🧠 console", color: "#00ff88" },
+      { id: "logs", label: "📜 logs", color: "#ffaa00" },
+      { id: "dread", label: "🖤 dread", color: "#ff4444" },
+      { id: "core", label: "🧿 core", color: "#00ffaa" },
+            { id: "credits", label: "🎖️ credits", color: "#ffcc00" },
+      { id: "plus", label: "➕", color: "#ffffff" }
     ];
 
+    const activeTabIds = JSON.parse(localStorage.getItem("auroraTabs")) || allTabs.map(t => t.id);
+
+    const tabs = allTabs
+      .filter(tab => activeTabIds.includes(tab.id))
+      .map(tab => ({
+        ...tab,
+        posLeft: sharedLeft,
+        posTop: sharedTop,
+        fileURL: `https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/${encodeURIComponent(tab.id)}`
+      }));
+
     tabs.forEach(tab => {
-      tab.fileURL = `https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/${tab.id}`;
       createAuroraTab(tab);
     });
 
@@ -201,7 +242,7 @@
           logs.style.pointerEvents = stealthMode ? "none" : "auto";
 
           const timestamp = new Date().toISOString();
-                   logs.textContent += `[${timestamp}] 🔒 Stealth mode ${stealthMode ? "enabled" : "disabled"}\n`;
+          logs.textContent += `[${timestamp}] 🔒 Stealth mode ${stealthMode ? "enabled" : "disabled"}\n`;
           logs.scrollTop = logs.scrollHeight;
         }
       }
