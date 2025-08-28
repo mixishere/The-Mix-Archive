@@ -1,1 +1,43 @@
-blah blah blah placeholder text
+if (id === "plus") {
+  const allTabs = [
+    { id: "disk", label: "💾 disk" },
+    { id: "labs", label: "🧪 labs" },
+    { id: "clickr", label: "🎮 clickr" },
+    { id: "console", label: "🧠 console" },
+    { id: "logs", label: "📜 logs" },
+    { id: "dread", label: "🖤 dread" },
+    { id: "core", label: "🧿 core" },
+    { id: "credits", label: "🎖️ credits" }
+  ];
+
+  const activeTabs = JSON.parse(localStorage.getItem("auroraTabs")) || allTabs.map(t => t.id);
+
+  viewer.innerHTML = `<div style="font-family: monospace; font-size: 14px; color: #ccc;">
+    <b>🌌 Tab Selector</b><br><br>
+    ${allTabs.map(tab => `
+      <label style="display: block; margin-bottom: 8px;">
+        <input type="checkbox" data-tab="${tab.id}" ${activeTabs.includes(tab.id) ? "checked" : ""}>
+        ${tab.label}
+      </label>
+    `).join("")}
+    <button id="saveTabs" style="
+      margin-top: 12px; padding: 8px 16px;
+      background: #66ffcc; color: #000;
+      border: none; border-radius: 6px;
+      font-family: 'Comfortaa', cursive;
+      cursor: pointer; box-shadow: 0 0 6px #66ffcc;
+    ">Save Selection</button>
+  </div>`;
+
+  viewer.style.display = "block";
+  logEvent("➕ tab opened — tab selector active");
+
+  document.getElementById("saveTabs").onclick = () => {
+    const selected = Array.from(viewer.querySelectorAll("input[type='checkbox']"))
+      .filter(cb => cb.checked)
+      .map(cb => cb.dataset.tab);
+    localStorage.setItem("auroraTabs", JSON.stringify(selected));
+    logEvent("➕ tab selection saved");
+    location.reload(); // or re-render tabs dynamically
+  };
+}
