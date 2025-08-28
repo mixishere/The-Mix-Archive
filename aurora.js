@@ -188,16 +188,17 @@
     const sharedTop = 100;
 
     const allTabs = [
-      { id: "disk", label: "💾 disk", color: "#ff77e9" },
-      { id: "labs", label: "🧪 labs", color: "#cc66ff" },
-      { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
-      { id: "console", label: "🧠 console", color: "#00ff88" },
-      { id: "logs", label: "📜 logs", color: "#ffaa00" },
-      { id: "dread", label: "🖤 dread", color: "#ff4444" },
-      { id: "core", label: "🧿 core", color: "#00ffaa" },
-            { id: "credits", label: "🎖️ credits", color: "#ffcc00" },
-      { id: "plus", label: "➕", color: "#ffffff" }
-    ];
+  { id: "disk", label: "💾 disk", color: "#ff77e9" },
+  { id: "labs", label: "🧪 labs", color: "#cc66ff" },
+  { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
+  { id: "console", label: "🧠 console", color: "#00ff88" },
+  { id: "logs", label: "📜 logs", color: "#ffaa00" },
+  { id: "dread", label: "🖤 dread", color: "#ff4444" },
+  { id: "core", label: "🧿 core", color: "#00ffaa" },
+  { id: "credits", label: "🎖️ credits", color: "#ffcc00" },
+  { id: "plus", label: "➕", color: "#ffffff" },
+  { id: "devtools", label: "🛠 devtools", color: "#ccccff" }
+];
 
     const activeTabIds = JSON.parse(localStorage.getItem("auroraTabs")) || allTabs.map(t => t.id);
 
