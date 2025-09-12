@@ -36,6 +36,8 @@
   };
 
   function runAurora() {
+    let auroraRunOnly = false;
+
     const versionLabel = document.createElement("div");
     versionLabel.textContent = "Aurora v4-CoreOnly";
     versionLabel.style = `
@@ -123,6 +125,7 @@
                   ${tab.label}
                 </label>
               `).join("")}
+
               <button id="saveTabs" style="
                 margin-top: 12px; padding: 8px 16px;
                 background: #66ffcc; color: #000;
@@ -130,17 +133,30 @@
                 font-family: 'Comfortaa', cursive;
                 cursor: pointer; box-shadow: 0 0 6px #66ffcc;
               ">Save Selection</button>
+
+              <hr style="margin: 20px 0; border: none; border-top: 1px solid #444;">
+
+              <label style="display: block; margin-bottom: 8px;">
+                <input type="checkbox" id="runOnlyToggle" ${auroraRunOnly ? "checked" : ""}>
+                ⚙️ RunOnly Mode (execute modules instead of viewing)
+              </label>
             </div>`;
+
             viewer.style.display = "block";
             logEvent("➕ tab opened — tab selector active");
 
             document.getElementById("saveTabs").onclick = () => {
               const selected = Array.from(viewer.querySelectorAll("input[type='checkbox']"))
-                .filter(cb => cb.checked)
+                .filter(cb => cb.checked && cb.id !== "runOnlyToggle")
                 .map(cb => cb.dataset.tab);
               localStorage.setItem("auroraTabs", JSON.stringify([...selected, "plus"]));
               logEvent("➕ tab selection saved");
               location.reload();
+            };
+
+            document.getElementById("runOnlyToggle").onchange = (e) => {
+              auroraRunOnly = e.target.checked;
+              logEvent(`⚙️ RunOnly mode ${auroraRunOnly ? "enabled" : "disabled"} via ➕`);
             };
           } else {
             viewer.textContent = `🔄 Initializing ${label}...`;
@@ -149,12 +165,13 @@
               .then(res => res.ok ? res.text() : Promise.reject("Failed to load"))
               .then(code => {
                 logEvent(`${id} viewer opened`);
-                if (id === "core") {
+                if (auroraRunOnly || id === "core" || id === "devtools") {
                   try {
                     eval(code);
+                    viewer.textContent = `✅ ${id} executed`;
                   } catch (err) {
-                    viewer.textContent = `❌ Error running core: ${err}`;
-                    logEvent(`core execution failed`);
+                    viewer.textContent = `❌ Error running ${id}: ${err}`;
+                    logEvent(`${id} execution failed`);
                   }
                 } else {
                   viewer.textContent = code;
@@ -188,17 +205,18 @@
     const sharedTop = 100;
 
     const allTabs = [
-  { id: "disk", label: "💾 disk", color: "#ff77e9" },
-  { id: "labs", label: "🧪 labs", color: "#cc66ff" },
-  { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
-  { id: "console", label: "🧠 console", color: "#00ff88" },
-  { id: "logs", label: "📜 logs", color: "#ffaa00" },
-  { id: "dread", label: "🖤 dread", color: "#ff4444" },
-  { id: "core", label: "🧿 core", color: "#00ffaa" },
-  { id: "credits", label: "🎖️ credits", color: "#ffcc00" },
-  { id: "plus", label: "➕", color: "#ffffff" },
-  { id: "devtools", label: "🛠 devtools", color: "#ccccff" }
-];
+
+              { id: "disk", label: "💾 disk", color: "#ff77e9" },
+      { id: "labs", label: "🧪 labs", color: "#cc66ff" },
+      { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
+      { id: "console", label: "🧠 console", color: "#00ff88" },
+      { id: "logs", label: "📜 logs", color: "#ffaa00" },
+      { id: "dread", label: "🖤 dread", color: "#ff4444" },
+      { id: "core", label: "🧿 core", color: "#00ffaa" },
+      { id: "credits", label: "🎖️ credits", color: "#ffcc00" },
+      { id: "plus", label: "➕", color: "#ffffff" },
+      { id: "devtools", label: "🛠 devtools", color: "#ccccff" }
+    ];
 
     const activeTabIds = JSON.parse(localStorage.getItem("auroraTabs")) || allTabs.map(t => t.id);
 
@@ -222,40 +240,6 @@
       if (e.key === "\\") {
         stealthMode = !stealthMode;
 
-// 🛠 Devtools Summon/Dissolve
-let inputBuffer = [];
-
-window.addEventListener("keydown", (e) => {
-  inputBuffer.push(e.key);
-  if (inputBuffer.length > 3) inputBuffer.shift();
-
-  const sequence = inputBuffer.join("");
-
-  if (sequence === "505") {
-    const devtoolsTab = {
-      id: "devtools",
-      label: "🛠 devtools",
-      color: "#ccccff",
-      posLeft: 100,
-      posTop: 100,
-      fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/devtools"
-    };
-    createAuroraTab(devtoolsTab);
-    logEvent("🛠 Devtools summoned via 505");
-    inputBuffer = [];
-  }
-
-  if (sequence === "000") {
-    const devtoolsViewer = document.getElementById("devtoolsGUI");
-    const devtoolsButton = Array.from(document.querySelectorAll("button"))
-      .find(btn => btn.textContent === "🛠 devtools");
-    if (devtoolsViewer) devtoolsViewer.remove();
-    if (devtoolsButton) devtoolsButton.remove();
-    logEvent("🛠 Devtools dissolved via 000");
-    inputBuffer = [];
-  }
-});
-        
         const viewers = document.querySelectorAll("[id$='GUI']");
         const tabBar = document.getElementById("auroraTabs");
         const logs = document.getElementById("logsGUI");
@@ -280,6 +264,40 @@ window.addEventListener("keydown", (e) => {
           logs.textContent += `[${timestamp}] 🔒 Stealth mode ${stealthMode ? "enabled" : "disabled"}\n`;
           logs.scrollTop = logs.scrollHeight;
         }
+      }
+    });
+
+    // 🛠 Devtools Summon/Dissolve
+    let inputBuffer = [];
+
+    window.addEventListener("keydown", (e) => {
+      inputBuffer.push(e.key);
+      if (inputBuffer.length > 3) inputBuffer.shift();
+
+      const sequence = inputBuffer.join("");
+
+      if (sequence === "505") {
+        const devtoolsTab = {
+          id: "devtools",
+          label: "🛠 devtools",
+          color: "#ccccff",
+          posLeft: 100,
+          posTop: 100,
+          fileURL: "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/devtools"
+        };
+        createAuroraTab(devtoolsTab);
+        logEvent("🛠 Devtools summoned via 505");
+        inputBuffer = [];
+      }
+
+      if (sequence === "000") {
+        const devtoolsViewer = document.getElementById("devtoolsGUI");
+        const devtoolsButton = Array.from(document.querySelectorAll("button"))
+          .find(btn => btn.textContent === "🛠 devtools");
+        if (devtoolsViewer) devtoolsViewer.remove();
+        if (devtoolsButton) devtoolsButton.remove();
+        logEvent("🛠 Devtools dissolved via 000");
+        inputBuffer = [];
       }
     });
   }
