@@ -39,7 +39,7 @@
     let auroraRunOnly = true;
 
     const versionLabel = document.createElement("div");
-    versionLabel.textContent = "Aurora v4-CoreOnly";
+    versionLabel.textContent = "Aurora v5-CoreOnly";
     versionLabel.style = `
       position: fixed; top: 40px; left: 0; width: 100%;
       text-align: center; font-family: monospace;
@@ -188,25 +188,22 @@
       document.getElementById("auroraTabs").appendChild(tabBtn);
     }
 
-    let tabBar = document.getElementById("auroraTabs");
-    if (!tabBar) {
-      tabBar = document.createElement("div");
-      tabBar.id = "auroraTabs";
-      tabBar.style = `
-        position: fixed; top: 80px; left: 0; width: 80px;
-        background: #0d0d0d; padding-top: 20px;
-        border-right: 2px solid white; z-index: 10000;
-        transition: opacity 0.4s ease;
-      `;
-      document.body.appendChild(tabBar);
-    }
+    const tabBar = document.createElement("div");
+    tabBar.id = "auroraTabs";
+    tabBar.style = `
+      position: fixed; top: 80px; left: 0; width: 80px;
+      background: #0d0d0d; padding-top: 20px;
+      border-right: 2px solid white; z-index: 10000;
+      transition: opacity 0.4s ease;
+    `;
+    document.body.appendChild(tabBar);
 
     const sharedLeft = 100;
     const sharedTop = 100;
 
     const allTabs = [
       { id: "disk", label: "💾 disk", color: "#ff77e9" },
-      { id: "labs", label: "🧪 labs", color: "#cc66ff" },
+           { id: "labs", label: "🧪 labs", color: "#cc66ff" },
       { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
       { id: "console", label: "🧠 console", color: "#00ff88" },
       { id: "logs", label: "📜 logs", color: "#ffaa00" },
@@ -232,7 +229,7 @@
       createAuroraTab(tab);
     });
 
-    // 🔒 Stealth Mode v2
+    // 🔒 Stealth Mode
     let stealthMode = false;
 
     window.addEventListener("keydown", (e) => {
