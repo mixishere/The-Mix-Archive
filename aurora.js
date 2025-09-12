@@ -36,7 +36,7 @@
   };
 
   function runAurora() {
-    let auroraRunOnly = false;
+    let auroraRunOnly = true;
 
     const versionLabel = document.createElement("div");
     versionLabel.textContent = "Aurora v4-CoreOnly";
@@ -137,7 +137,7 @@
               <hr style="margin: 20px 0; border: none; border-top: 1px solid #444;">
 
               <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="runOnlyToggle" ${auroraRunOnly ? "checked" : ""}>
+                <input type="checkbox" id="runOnlyToggle" checked>
                 ⚙️ RunOnly Mode (execute modules instead of viewing)
               </label>
             </div>`;
@@ -205,8 +205,7 @@
     const sharedTop = 100;
 
     const allTabs = [
-
-              { id: "disk", label: "💾 disk", color: "#ff77e9" },
+      { id: "disk", label: "💾 disk", color: "#ff77e9" },
       { id: "labs", label: "🧪 labs", color: "#cc66ff" },
       { id: "clickr", label: "🎮 clickr", color: "#00ffff" },
       { id: "console", label: "🧠 console", color: "#00ff88" },
