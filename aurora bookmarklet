@@ -1,0 +1,1 @@
+javascript:(function(){fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/aurora.js").then(r=>r.text()).then(c=>eval(c));})();
