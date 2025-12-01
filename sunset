@@ -1,0 +1,203 @@
+(function(){
+  // Load Comfortaa font
+  const fontLink = document.createElement("link");
+  fontLink.href = "https://fonts.googleapis.com/css2?family=Comfortaa&display=swap";
+  fontLink.rel = "stylesheet";
+  document.head.appendChild(fontLink);
+
+  // Root container (draggable)
+  const sunsetRoot = document.createElement("div");
+  sunsetRoot.id = "sunsetRoot";
+  sunsetRoot.style.position = "absolute";
+  sunsetRoot.style.top = "100px";
+  sunsetRoot.style.left = "100px";
+  sunsetRoot.style.width = "800px";
+  sunsetRoot.style.height = "500px";
+  sunsetRoot.style.display = "flex";
+  sunsetRoot.style.flexDirection = "column";
+  sunsetRoot.style.background = "linear-gradient(to bottom, #FF7E5F, #FEB47B, #6A0572)";
+  sunsetRoot.style.border = "2px solid #555";
+  sunsetRoot.style.borderRadius = "16px";
+  sunsetRoot.style.fontFamily = "'Comfortaa', sans-serif";
+  sunsetRoot.style.color = "#fff";
+  sunsetRoot.style.zIndex = "99999";
+  sunsetRoot.style.transition = "height 0.4s ease";
+  document.body.appendChild(sunsetRoot);
+
+  // Title bar
+  const titleBar = document.createElement("div");
+  titleBar.style.background = "rgba(0,0,0,0.4)";
+  titleBar.style.padding = "10px";
+  titleBar.style.display = "flex";
+  titleBar.style.alignItems = "center";
+  titleBar.style.justifyContent = "space-between";
+  titleBar.style.fontSize = "18px";
+  titleBar.style.fontWeight = "bold";
+  titleBar.style.borderTopLeftRadius = "16px";
+  titleBar.style.borderTopRightRadius = "16px";
+  sunsetRoot.appendChild(titleBar);
+
+  // Title text + note
+  const titleText = document.createElement("div");
+  titleText.innerHTML = `Sunset v1 <br><span style="font-size:12px; font-weight:normal;">(drag the title to move the GUI)</span>`;
+  titleBar.appendChild(titleText);
+
+  // Control buttons
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.gap = "8px";
+
+  const minimizeBtn = document.createElement("button");
+  minimizeBtn.textContent = "–";
+  minimizeBtn.style.cursor = "pointer";
+  minimizeBtn.style.border = "none";
+  minimizeBtn.style.borderRadius = "6px";
+  minimizeBtn.style.padding = "4px 8px";
+  minimizeBtn.style.background = "#FEB47B";
+  minimizeBtn.style.color = "#000";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "×";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.border = "none";
+  closeBtn.style.borderRadius = "6px";
+  closeBtn.style.padding = "4px 8px";
+  closeBtn.style.background = "#FF7E5F";
+  closeBtn.style.color = "#000";
+
+  controls.appendChild(minimizeBtn);
+  controls.appendChild(closeBtn);
+  titleBar.appendChild(controls);
+
+  // Content row (main + sidebar)
+  const contentRow = document.createElement("div");
+  contentRow.style.flex = "1";
+  contentRow.style.display = "flex";
+  contentRow.style.flexDirection = "row";
+  contentRow.style.transition = "opacity 0.4s ease";
+  sunsetRoot.appendChild(contentRow);
+
+  // Main GUI display area
+  const guiDisplay = document.createElement("div");
+  guiDisplay.id = "guiDisplay";
+  guiDisplay.style.flex = "1";
+  guiDisplay.style.margin = "10px";
+  guiDisplay.style.background = "rgba(0,0,0,0.4)";
+  guiDisplay.style.borderRadius = "12px";
+  guiDisplay.style.display = "flex";
+  guiDisplay.style.flexDirection = "column";
+  guiDisplay.style.alignItems = "center";
+  guiDisplay.style.justifyContent = "center";
+  guiDisplay.textContent = "The GUI's open here";
+  contentRow.appendChild(guiDisplay);
+
+  // Bottom dock (inside main GUI)
+  const guiDock = document.createElement("div");
+  guiDock.id = "guiDock";
+  guiDock.style.width = "90%";
+  guiDock.style.height = "50px";
+  guiDock.style.background = "rgba(255,255,255,0.2)";
+  guiDock.style.borderRadius = "12px";
+  guiDock.style.margin = "10px";
+  guiDock.style.display = "flex";
+  guiDock.style.alignItems = "center";
+  guiDock.style.justifyContent = "center";
+  guiDock.style.gap = "10px";
+  guiDisplay.appendChild(guiDock);
+
+  // Right sidebar for settings
+  const settingsPanel = document.createElement("div");
+  settingsPanel.id = "settingsPanel";
+  settingsPanel.textContent = "Settings";
+  settingsPanel.style.width = "160px";
+  settingsPanel.style.background = "rgba(0,0,0,0.5)";
+  settingsPanel.style.borderRadius = "12px";
+  settingsPanel.style.padding = "10px";
+  settingsPanel.style.display = "flex";
+  settingsPanel.style.flexDirection = "column";
+  contentRow.appendChild(settingsPanel);
+
+  // --- Make entire GUI draggable via title bar ---
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  titleBar.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      sunsetRoot.style.left = (e.pageX - offsetX) + "px";
+      sunsetRoot.style.top = (e.pageY - offsetY) + "px";
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+
+  // --- Button functionality ---
+  minimizeBtn.onclick = () => {
+    if (contentRow.style.display !== "none") {
+      contentRow.style.opacity = "0";
+      setTimeout(() => {
+        contentRow.style.display = "none";
+        sunsetRoot.style.height = "60px";
+        minimizeBtn.textContent = "+";
+      }, 400);
+    } else {
+      contentRow.style.display = "flex";
+      setTimeout(() => {
+        contentRow.style.opacity = "1";
+        sunsetRoot.style.height = "500px";
+        minimizeBtn.textContent = "–";
+      }, 50);
+    }
+  };
+
+  closeBtn.onclick = () => {
+    sunsetRoot.remove();
+  };
+
+  // --- Clickr Game Integration ---
+  function loadClickrGUI() {
+    const wrapper = document.createElement("div");
+    wrapper.style.flex = "1";
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+    wrapper.style.alignItems = "center";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.width = "100%";
+    wrapper.style.height = "100%";
+
+    // Embed Clickr directly from GitHub Pages
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://github.com/mixishere/The-Mix-Archive/blob/main/clickr"; 
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.style.borderRadius = "12px";
+    wrapper.appendChild(iframe);
+
+    return wrapper;
+  }
+
+  // Register Clickr in dock
+  const clickrDockItem = document.createElement("button");
+  clickrDockItem.textContent = "Clickr";
+  clickrDockItem.style.padding = "6px 12px";
+  clickrDockItem.style.borderRadius = "10px";
+  clickrDockItem.style.border = "none";
+  clickrDockItem.style.cursor = "pointer";
+  clickrDockItem.style.background = "#FEB47B";
+  clickrDockItem.style.color = "#000";
+  clickrDockItem.style.fontFamily = "'Comfortaa', sans-serif";
+  clickrDockItem.onclick = () => {
+    guiDisplay.innerHTML = "";
+    guiDisplay.appendChild(loadClickrGUI());
+  };
+  guiDock.appendChild(clickrDockItem);
+
+})();
