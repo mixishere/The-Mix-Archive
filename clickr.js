@@ -10,7 +10,7 @@ javascript:(function() {
   clickrDiv.id = "clickrDiv";
   clickrDiv.style.position = "fixed";
   clickrDiv.style.top = "50px";
-  clickrDiv.style.left = "50px";
+  clickrDiv.style.right = "50px";
   clickrDiv.style.padding = "20px";
   clickrDiv.style.background = "#1e1e1e";
   clickrDiv.style.border = "1px solid #444";
