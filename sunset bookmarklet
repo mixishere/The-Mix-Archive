@@ -1,0 +1,1 @@
+javascript:(function(){fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/sunset").then(r=>r.text()).then(c=>eval(c));})();
