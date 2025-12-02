@@ -1,5 +1,4 @@
 (function(){
-  // --- Sunset v1 Shell ---
   const fontLink = document.createElement("link");
   fontLink.href = "https://fonts.googleapis.com/css2?family=Comfortaa&display=swap";
   fontLink.rel = "stylesheet";
@@ -8,35 +7,22 @@
   const sunsetRoot = document.createElement("div");
   sunsetRoot.id = "sunsetRoot";
   Object.assign(sunsetRoot.style, {
-    position: "absolute",
-    top: "100px",
-    left: "100px",
-    width: "800px",
-    height: "500px",
-    display: "flex",
-    flexDirection: "column",
+    position: "absolute", top: "100px", left: "100px",
+    width: "800px", height: "500px",
+    display: "flex", flexDirection: "column",
     background: "linear-gradient(to bottom, #FF7E5F, #FEB47B, #6A0572)",
-    border: "2px solid #555",
-    borderRadius: "16px",
-    fontFamily: "'Comfortaa', sans-serif",
-    color: "#fff",
-    zIndex: "99999",
-    transition: "height 0.4s ease"
+    border: "2px solid #555", borderRadius: "16px",
+    fontFamily: "'Comfortaa', sans-serif", color: "#fff",
+    zIndex: "99999", transition: "height 0.4s ease"
   });
   document.body.appendChild(sunsetRoot);
 
-  // Title bar
   const titleBar = document.createElement("div");
   Object.assign(titleBar.style, {
-    background: "rgba(0,0,0,0.4)",
-    padding: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    fontSize: "18px",
-    fontWeight: "bold",
-    borderTopLeftRadius: "16px",
-    borderTopRightRadius: "16px"
+    background: "rgba(0,0,0,0.4)", padding: "10px",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    fontSize: "18px", fontWeight: "bold",
+    borderTopLeftRadius: "16px", borderTopRightRadius: "16px"
   });
   sunsetRoot.appendChild(titleBar);
 
@@ -45,94 +31,68 @@
   titleBar.appendChild(titleText);
 
   const controls = document.createElement("div");
-  controls.style.display = "flex";
-  controls.style.gap = "8px";
+  controls.style.display = "flex"; controls.style.gap = "8px";
 
-  const minimizeBtn = document.createElement("button");
-  minimizeBtn.textContent = "–";
-  const closeBtn = document.createElement("button");
-  closeBtn.textContent = "×";
-  const fullscreenBtn = document.createElement("button");
-  fullscreenBtn.textContent = "⛶"; // fullscreen icon
+  const minimizeBtn = document.createElement("button"); minimizeBtn.textContent = "–";
+  const fullscreenBtn = document.createElement("button"); fullscreenBtn.textContent = "⛶";
+  const closeBtn = document.createElement("button"); closeBtn.textContent = "×";
+  const sunBtn = document.createElement("button"); sunBtn.textContent = "☀";
 
-  [minimizeBtn, closeBtn, fullscreenBtn].forEach(btn => {
+  [minimizeBtn, fullscreenBtn, closeBtn, sunBtn].forEach(btn => {
     Object.assign(btn.style, {
-      cursor: "pointer",
-      border: "none",
-      borderRadius: "6px",
-      padding: "4px 8px"
+      cursor: "pointer", border: "none", borderRadius: "6px", padding: "4px 8px"
     });
   });
   minimizeBtn.style.background = "#FEB47B";
+  fullscreenBtn.style.background = "#6A0572"; fullscreenBtn.style.color = "#fff";
   closeBtn.style.background = "#FF7E5F";
-  fullscreenBtn.style.background = "#6A0572";
-  fullscreenBtn.style.color = "#fff";
+  sunBtn.style.background = "#FFD700";
 
   controls.appendChild(minimizeBtn);
   controls.appendChild(fullscreenBtn);
   controls.appendChild(closeBtn);
+  controls.appendChild(sunBtn);
   titleBar.appendChild(controls);
 
   const contentRow = document.createElement("div");
   Object.assign(contentRow.style, {
-    flex: "1",
-    display: "flex",
-    flexDirection: "row",
-    transition: "opacity 0.4s ease"
+    flex: "1", display: "flex", flexDirection: "row", transition: "opacity 0.4s ease"
   });
   sunsetRoot.appendChild(contentRow);
 
   const guiDisplay = document.createElement("div");
   guiDisplay.id = "guiDisplay";
   Object.assign(guiDisplay.style, {
-    flex: "1",
-    margin: "10px",
-    background: "rgba(0,0,0,0.4)",
-    borderRadius: "12px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
+    flex: "1", margin: "10px", background: "rgba(0,0,0,0.4)",
+    borderRadius: "12px", display: "flex", flexDirection: "column",
+    alignItems: "center", justifyContent: "center"
   });
   contentRow.appendChild(guiDisplay);
 
   const guiDock = document.createElement("div");
   guiDock.id = "guiDock";
   Object.assign(guiDock.style, {
-    width: "90%",
-    height: "50px",
-    background: "rgba(255,255,255,0.2)",
-    borderRadius: "12px",
-    margin: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "10px"
+    width: "90%", height: "50px", background: "rgba(255,255,255,0.2)",
+    borderRadius: "12px", margin: "10px",
+    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px"
   });
   guiDisplay.appendChild(guiDock);
 
-  // --- Notes Panel (sidebar) ---
   const notesPanel = document.createElement("div");
   notesPanel.id = "notesPanel";
   Object.assign(notesPanel.style, {
-    width: "160px",
-    background: "rgba(0,0,0,0.5)",
-    borderRadius: "12px",
-    padding: "10px",
-    display: "flex",
-    flexDirection: "column",
-    color: "#fff",
-    fontSize: "12px",
-    lineHeight: "1.4",
-    whiteSpace: "pre-line"
+    width: "160px", background: "rgba(0,0,0,0.5)", borderRadius: "12px",
+    padding: "10px", display: "flex", flexDirection: "column",
+    color: "#fff", fontSize: "12px", lineHeight: "1.4", whiteSpace: "pre-line"
   });
   notesPanel.textContent = "To use Snubtendo:\n- Click Start Learning\n- Put 'funni' for the password\n- Leave Student ID empty";
   contentRow.appendChild(notesPanel);
 
-  // --- Draggable ---
   let isDragging = false, offsetX, offsetY;
   titleBar.addEventListener("mousedown", e => { isDragging = true; offsetX = e.offsetX; offsetY = e.offsetY; });
-  document.addEventListener("mousemove", e => { if(isDragging){ sunsetRoot.style.left = (e.pageX - offsetX)+"px"; sunsetRoot.style.top = (e.pageY - offsetY)+"px"; }});
+  document.addEventListener("mousemove", e => {
+    if(isDragging){ sunsetRoot.style.left = (e.pageX - offsetX)+"px"; sunsetRoot.style.top = (e.pageY - offsetY)+"px"; }
+  });
   document.addEventListener("mouseup", ()=>{ isDragging=false; });
 
   minimizeBtn.onclick = () => {
@@ -146,42 +106,30 @@
   };
   closeBtn.onclick = () => sunsetRoot.remove();
 
-  // --- Fullscreen toggle ---
   let isFullscreen = false;
   fullscreenBtn.onclick = () => {
     if (!isFullscreen) {
       Object.assign(sunsetRoot.style, {
-        position: "fixed",
-        top: "0",
-        left: "0",
-        width: "100%",
-        height: "100%"
+        position: "fixed", top: "0", left: "0", width: "100%", height: "100%"
       });
-      isFullscreen = true;
-      fullscreenBtn.textContent = "🗗"; // exit fullscreen icon
+      isFullscreen = true; fullscreenBtn.textContent = "🗗";
     } else {
       Object.assign(sunsetRoot.style, {
-        position: "absolute",
-        top: "100px",
-        left: "100px",
-        width: "800px",
-        height: "500px"
+        position: "absolute", top: "100px", left: "100px", width: "800px", height: "500px"
       });
-      isFullscreen = false;
-      fullscreenBtn.textContent = "⛶"; // fullscreen icon
+      isFullscreen = false; fullscreenBtn.textContent = "⛶";
     }
   };
 
-  // --- Tab System (Aurora-style) ---
-  const tabs = {};
+  sunBtn.onclick = () => {
+    guiDisplay.innerHTML = "";
+    guiDisplay.appendChild(guiDock);
+  };
+
   function styleDockButton(btn){
     Object.assign(btn.style, {
-      padding: "6px 12px",
-      borderRadius: "10px",
-      border: "none",
-      cursor: "pointer",
-      background: "#FEB47B",
-      color: "#000",
+      padding: "6px 12px", borderRadius: "10px", border: "none",
+      cursor: "pointer", background: "#FEB47B", color: "#000",
       fontFamily: "'Comfortaa', sans-serif"
     });
   }
@@ -190,90 +138,85 @@
     const openBtn = document.createElement("button");
     openBtn.textContent = name;
     styleDockButton(openBtn);
-
-    // Open tab logic
     openBtn.onclick = () => {
-      guiDisplay.innerHTML = "";
-      guiDisplay.appendChild(guiDock);
-
+      guiDisplay.innerHTML = ""; guiDisplay.appendChild(guiDock);
       const tabContent = contentFn();
-
-      // Decorative sun button (clears view only)
-      const sunBtn = document.createElement("button");
-      sunBtn.textContent = "☀";
-      Object.assign(sunBtn.style, {
-        position: "absolute",
-        top: "10px",
-        right: "10px",
-        border: "none",
-        borderRadius: "50%",
-        padding: "6px",
-        background: "#FFD700",
-        cursor: "pointer"
-      });
-      sunBtn.onclick = () => {
-        guiDisplay.innerHTML = "";
-        guiDisplay.appendChild(guiDock);
-      };
-
-      tabContent.style.position = "relative";
-      tabContent.appendChild(sunBtn);
-
       guiDisplay.appendChild(tabContent);
     };
-
     guiDock.appendChild(openBtn);
-    tabs[name] = contentFn;
   }
 
-  // --- Clickr Tab ---
   function loadClickrGUI(){
     const wrapper = document.createElement("div");
     Object.assign(wrapper.style, {
-      flex: "1",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      height: "100%"
+      flex: "1", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", width: "100%", height: "100%"
     });
-
-    const script = document.createElement("script");
-    script.src = "https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr";
-    wrapper.appendChild(script);
-
+    fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+      .then(res => res.text())
+      .then(code => { eval(code); })
+      .catch(err => {
+        const msg = document.createElement("div");
+        msg.textContent = "Failed to load Clickr: " + err;
+        wrapper.appendChild(msg);
+      });
     return wrapper;
   }
 
-   // --- Snubtendo Tab ---
   function loadSnubtendoGUI(){
     const wrapper = document.createElement("div");
     Object.assign(wrapper.style, {
-      flex: "1",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      height: "100%"
+      flex: "1", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", width: "100%", height: "100%"
     });
-
     const iframe = document.createElement("iframe");
     iframe.src = "https://therealsnubby.com";
     Object.assign(iframe.style, {
-      width: "100%",
-      height: "100%",
-      border: "none",
-      borderRadius: "12px"
+      width: "100%", height: "100%", border: "none", borderRadius: "12px"
     });
     wrapper.appendChild(iframe);
-
     return wrapper;
   }
 
-  // Register tabs
+  function loadDiskGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", width: "100%", height: "100%"
+    });
+      fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+      .then(res => res.text())
+      .then(code => { eval(code); })
+      .catch(err => {
+        const msg = document.createElement("div");
+        msg.textContent = "Failed to load Disk: " + err;
+        wrapper.appendChild(msg);
+      });
+    return wrapper;
+  }
+
+  // --- Chat tab (tlk.io iframe) ---
+  function loadChatGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1", display: "flex", flexDirection: "column",
+      width: "100%", height: "100%"
+    });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://tlk.io/sunset"; // HTTPS avoids mixed content
+    Object.assign(iframe.style, {
+      width: "100%", height: "100%",
+      border: "none", borderRadius: "12px"
+    });
+    wrapper.appendChild(iframe);
+    return wrapper;
+  }
+
+  // --- Register all tabs ---
   registerTab("Clickr", loadClickrGUI);
   registerTab("Snubtendo", loadSnubtendoGUI);
+  registerTab("Disk", loadDiskGUI);
+  registerTab("Chat", loadChatGUI);
 
 })();
+
