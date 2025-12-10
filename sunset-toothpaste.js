@@ -1,0 +1,213 @@
+(function(){
+  const fontLink = document.createElement("link");
+  fontLink.href = "https://fonts.googleapis.com/css2?family=Comfortaa&display=swap";
+  fontLink.rel = "stylesheet";
+  document.head.appendChild(fontLink);
+
+  const sunsetRoot = document.createElement("div");
+  sunsetRoot.id = "sunsetRoot";
+  Object.assign(sunsetRoot.style, {
+    position: "absolute", top: "100px", left: "100px",
+    width: "800px", height: "500px",
+    display: "flex", flexDirection: "column",
+    background: "linear-gradient(180deg, #C8F7F0 0%, #8DE6D0 40%, #EFFFFA 100%)", // Toothpaste gradient
+    border: "2px solid #6CAFA5", borderRadius: "16px",
+    fontFamily: "'Comfortaa', sans-serif", color: "#073B3A",
+    zIndex: "99999", transition: "height 0.4s ease"
+  });
+  document.body.appendChild(sunsetRoot);
+
+  const titleBar = document.createElement("div");
+  Object.assign(titleBar.style, {
+    background: "rgba(7,59,58,0.25)", padding: "10px",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    fontSize: "18px", fontWeight: "bold",
+    borderTopLeftRadius: "16px", borderTopRightRadius: "16px"
+  });
+  sunsetRoot.appendChild(titleBar);
+
+  const titleText = document.createElement("div");
+  titleText.innerHTML = `Sunset v1 — Toothpaste<br><span style="font-size:12px; font-weight:normal;">(drag the title to move the GUI)</span>`;
+  titleBar.appendChild(titleText);
+
+  const controls = document.createElement("div");
+  controls.style.display = "flex"; controls.style.gap = "8px";
+
+  const minimizeBtn = document.createElement("button"); minimizeBtn.textContent = "–";
+  const fullscreenBtn = document.createElement("button"); fullscreenBtn.textContent = "⛶";
+  const closeBtn = document.createElement("button"); closeBtn.textContent = "×";
+  const sunBtn = document.createElement("button"); sunBtn.textContent = "☀";
+
+  [minimizeBtn, fullscreenBtn, closeBtn, sunBtn].forEach(btn => {
+    Object.assign(btn.style, {
+      cursor: "pointer", border: "none", borderRadius: "6px", padding: "4px 8px",
+      background: "#A9F1DF", color: "#0F5257",
+      transition: "background 0.2s ease"
+    });
+    btn.onmouseenter = () => btn.style.background = "#85E7CC";
+    btn.onmouseleave = () => btn.style.background = "#A9F1DF";
+  });
+
+  controls.appendChild(minimizeBtn);
+  controls.appendChild(fullscreenBtn);
+  controls.appendChild(closeBtn);
+  controls.appendChild(sunBtn);
+  titleBar.appendChild(controls);
+
+  const contentRow = document.createElement("div");
+  Object.assign(contentRow.style, {
+    flex: "1", display: "flex", flexDirection: "row", transition: "opacity 0.4s ease"
+  });
+  sunsetRoot.appendChild(contentRow);
+
+  const guiDisplay = document.createElement("div");
+  guiDisplay.id = "guiDisplay";
+  Object.assign(guiDisplay.style, {
+    flex: "1", margin: "10px", background: "rgba(200,247,240,0.35)",
+    borderRadius: "12px", display: "flex", flexDirection: "column",
+    alignItems: "center", justifyContent: "center"
+  });
+  contentRow.appendChild(guiDisplay);
+
+  const guiDock = document.createElement("div");
+  guiDock.id = "guiDock";
+  Object.assign(guiDock.style, {
+    width: "90%", height: "50px", background: "rgba(255,255,255,0.55)",
+    borderRadius: "12px", margin: "10px",
+    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px"
+  });
+  guiDisplay.appendChild(guiDock);
+
+  const notesPanel = document.createElement("div");
+  notesPanel.id = "notesPanel";
+  Object.assign(notesPanel.style, {
+    width: "160px", background: "rgba(200,247,240,0.35)", borderRadius: "12px",
+    padding: "10px", display: "flex", flexDirection: "column",
+    color: "#073B3A", fontSize: "12px", lineHeight: "1.4", whiteSpace: "pre-line"
+  });
+  notesPanel.textContent = "To use Snubtendo:\n- Click Start Learning\n- Put 'funni' for the password\n- Leave Student ID empty";
+  contentRow.appendChild(notesPanel);
+
+  // Drag logic
+  let isDragging = false, offsetX, offsetY;
+  titleBar.addEventListener("mousedown", e => { isDragging = true; offsetX = e.offsetX; offsetY = e.offsetY; });
+  document.addEventListener("mousemove", e => {
+    if(isDragging){ sunsetRoot.style.left = (e.pageX - offsetX)+"px"; sunsetRoot.style.top = (e.pageY - offsetY)+"px"; }
+  });
+  document.addEventListener("mouseup", ()=>{ isDragging=false; });
+
+  // Controls logic
+  minimizeBtn.onclick = () => {
+    if (contentRow.style.display !== "none") {
+      contentRow.style.opacity = "0";
+      setTimeout(() => { contentRow.style.display = "none"; sunsetRoot.style.height = "60px"; minimizeBtn.textContent = "+"; }, 400);
+    } else {
+      contentRow.style.display = "flex";
+      setTimeout(() => { contentRow.style.opacity = "1"; sunsetRoot.style.height = "500px"; minimizeBtn.textContent = "–"; }, 50);
+    }
+  };
+  closeBtn.onclick = () => sunsetRoot.remove();
+
+  let isFullscreen = false;
+  fullscreenBtn.onclick = () => {
+    if (!isFullscreen) {
+      Object.assign(sunsetRoot.style, { position: "fixed", top: "0", left: "0", width: "100%", height: "100%" });
+      isFullscreen = true; fullscreenBtn.textContent = "🗗";
+    } else {
+      Object.assign(sunsetRoot.style, { position: "absolute", top: "100px", left: "100px", width: "800px", height: "500px" });
+      isFullscreen = false; fullscreenBtn.textContent = "⛶";
+    }
+  };
+
+  sunBtn.onclick = () => {
+    guiDisplay.innerHTML = "";
+    guiDisplay.appendChild(guiDock);
+  };
+
+  // Dock helpers
+  function styleDockButton(btn){
+    Object.assign(btn.style, {
+      padding: "6px 12px", borderRadius: "10px", border: "none",
+      cursor: "pointer", background: "#A9F1DF", color: "#0F5257",
+      fontFamily: "'Comfortaa', sans-serif"
+    });
+    btn.onmouseenter = () => btn.style.background = "#85E7CC";
+    btn.onmouseleave = () => btn.style.background = "#A9F1DF";
+  }
+
+  function registerTab(name, contentFn){
+    const openBtn = document.createElement("button");
+    openBtn.textContent = name;
+    styleDockButton(openBtn);
+    openBtn.onclick = () => {
+      guiDisplay.innerHTML = ""; guiDisplay.appendChild(guiDock);
+      const tabContent = contentFn();
+      guiDisplay.appendChild(tabContent);
+    };
+    guiDock.appendChild(openBtn);
+  }
+
+  // Modules
+  function loadClickrGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, { flex: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" });
+    fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+      .then(res => res.text())
+      .then(code => { eval(code); })
+      .catch(err => { const msg = document.createElement("div"); msg.textContent = "Failed to load Clickr: " + err; wrapper.appendChild(msg); });
+    return wrapper;
+  }
+
+  function loadSnubtendoGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, { flex: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://therealsnubby.com";
+    Object.assign(iframe.style, { width: "100%", height: "100%", border: "none", borderRadius: "12px" });
+    wrapper.appendChild(iframe);
+    return wrapper;
+  }
+
+  function loadDiskGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      width: "100%", height: "100%"
+    });
+    fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+      .then(res => res.text())
+      .then(code => { eval(code); })
+      .catch(err => {
+        const msg = document.createElement("div");
+        msg.textContent = "Failed to load Disk: " + err;
+        wrapper.appendChild(msg);
+      });
+    return wrapper;
+  }
+
+  function loadChatGUI(){
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1", display: "flex", flexDirection: "column",
+      width: "100%", height: "100%"
+    });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://tlk.io/sunset";
+    Object.assign(iframe.style, {
+      width: "100%", height: "100%",
+      border: "none", borderRadius: "12px"
+    });
+    wrapper.appendChild(iframe);
+    return wrapper;
+  }
+
+  // --- Register all tabs ---
+  registerTab("Clickr", loadClickrGUI);
+  registerTab("Snubtendo", loadSnubtendoGUI);
+  registerTab("Disk", loadDiskGUI);
+  registerTab("Chat", loadChatGUI);
+
+})();
+
+
