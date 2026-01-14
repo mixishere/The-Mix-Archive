@@ -1,0 +1,463 @@
+(function () {
+  // Root
+  const root = document.createElement("div");
+  Object.assign(root.style, {
+    position: "absolute",
+    top: "100px",
+    left: "100px",
+    width: "820px",
+    height: "520px",
+    background: "linear-gradient(135deg, #050608, #0b1114)",
+    borderRadius: "18px",
+    boxShadow: "0 0 40px rgba(0,255,120,0.45)",
+    border: "2px solid #00ff88",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    color: "#eafff5",
+    zIndex: "99999"
+  });
+  document.body.appendChild(root);
+
+  // Titlebar
+  const titleBar = document.createElement("div");
+  Object.assign(titleBar.style, {
+    padding: "10px 16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    background:
+      "linear-gradient(90deg, #07110b, #0f2b1a, #07110b)",
+    borderBottom: "1px solid #00ff88",
+    cursor: "move",
+    textShadow: "0 0 6px #00ff88",
+    fontSize: "15px",
+    letterSpacing: "0.08em",
+    textTransform: "uppercase"
+  });
+  root.appendChild(titleBar);
+
+  const titleText = document.createElement("div");
+  titleText.innerHTML =
+    `Toxic — Hazard Shell<br>` +
+    `<span style="font-size:11px; opacity:0.7;">drag to reposition the anomaly</span>`;
+  titleBar.appendChild(titleText);
+
+  // Controls
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.gap = "8px";
+  titleBar.appendChild(controls);
+
+  function toxicButton(label, accent) {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+    Object.assign(btn.style, {
+      border: "1px solid " + accent,
+      borderRadius: "0",
+      padding: "4px 10px",
+      minWidth: "26px",
+      background: "radial-gradient(circle at 30% 0%, " + accent + "33, #050608)",
+      color: "#eafff5",
+      fontWeight: "600",
+      cursor: "pointer",
+      boxShadow: "0 0 10px " + accent + "55",
+      textShadow: "0 0 4px " + accent,
+      fontSize: "12px",
+      transition: "transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 16px " + accent;
+      btn.style.background = "radial-gradient(circle at 30% 0%, " + accent + "66, #050608)";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0)";
+      btn.style.boxShadow = "0 0 10px " + accent + "55";
+      btn.style.background = "radial-gradient(circle at 30% 0%, " + accent + "33, #050608)";
+    };
+    btn.onmousedown = () => {
+      btn.style.transform = "translateY(1px) scale(0.97)";
+      btn.style.boxShadow = "0 0 6px " + accent;
+    };
+    btn.onmouseup = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 16px " + accent;
+    };
+    return btn;
+  }
+
+  const minBtn = toxicButton("–", "#00ff88");
+  const fullBtn = toxicButton("□", "#00e0ff");
+  const closeBtn = toxicButton("×", "#ff3366");
+  controls.appendChild(minBtn);
+  controls.appendChild(fullBtn);
+  controls.appendChild(closeBtn);
+
+  // Content row
+  const contentRow = document.createElement("div");
+  Object.assign(contentRow.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "row",
+    padding: "10px 12px 14px 12px",
+    gap: "10px",
+    transition: "opacity 0.2s ease"
+  });
+  root.appendChild(contentRow);
+
+  // Main area
+  const mainArea = document.createElement("div");
+  Object.assign(mainArea.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    background:
+      "linear-gradient(135deg, #050608, #07110b, #050608)",
+    borderRadius: "10px",
+    boxShadow: "inset 0 0 18px #00ff8840, 0 0 24px #00ff8820",
+    padding: "10px",
+    border: "1px solid #00ff8840",
+    minWidth: "0"
+  });
+  contentRow.appendChild(mainArea);
+
+  // Dock
+  const dock = document.createElement("div");
+  Object.assign(dock.style, {
+    width: "100%",
+    height: "56px",
+    background:
+      "linear-gradient(90deg, #050608, #07110b, #050608)",
+    borderRadius: "6px",
+    border: "1px solid #00ff8840",
+    boxShadow: "0 0 18px #00ff8830",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+    marginBottom: "10px",
+    position: "relative",
+    overflow: "hidden"
+  });
+  mainArea.appendChild(dock);
+
+  // Dock glitch line
+  const glitchLine = document.createElement("div");
+  Object.assign(glitchLine.style, {
+    position: "absolute",
+    top: "0",
+    left: "-40%",
+    width: "40%",
+    height: "2px",
+    background: "linear-gradient(90deg, transparent, #00ff88, transparent)",
+    opacity: "0.7",
+    pointerEvents: "none"
+  });
+  dock.appendChild(glitchLine);
+  setInterval(() => {
+    glitchLine.style.transition = "none";
+    glitchLine.style.left = "-40%";
+    requestAnimationFrame(() => {
+      glitchLine.style.transition = "left 0.4s linear";
+      glitchLine.style.left = "110%";
+    });
+  }, 2200);
+
+  // Tab content
+  const tabContent = document.createElement("div");
+  Object.assign(tabContent.style, {
+    flex: "1",
+    width: "100%",
+    borderRadius: "6px",
+    background:
+      "radial-gradient(circle at 0% 0%, #00ff8820, #050608 60%)",
+    border: "1px solid #00ff8840",
+    boxShadow: "inset 0 0 18px #00ff8830",
+    padding: "10px",
+    overflow: "hidden",
+    position: "relative"
+  });
+  mainArea.appendChild(tabContent);
+
+  // Notes panel
+  const notes = document.createElement("div");
+  Object.assign(notes.style, {
+    width: "220px",
+    background:
+      "linear-gradient(180deg, #050608, #07110b)",
+    borderRadius: "10px",
+    border: "1px solid #00ff8840",
+    boxShadow: "0 0 20px #00ff8820",
+    padding: "10px 12px",
+    fontSize: "11px",
+    lineHeight: "1.5",
+    color: "#c8ffe6",
+    whiteSpace: "pre-line"
+  });
+  notes.textContent =
+    "Toxic profile:\n" +
+    "- Jagged, unstable edges\n" +
+    "- Neon hazard glow\n" +
+    "- Same layout as the others\n\n" +
+    "Snubtendo ritual:\n" +
+    "- Click Start Learning\n" +
+    "- Password: funni\n" +
+    "- Leave Student ID empty";
+  contentRow.appendChild(notes);
+
+  // Dragging
+  let dragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+  titleBar.addEventListener("mousedown", (e) => {
+    dragging = true;
+    offsetX = e.clientX - root.getBoundingClientRect().left;
+    offsetY = e.clientY - root.getBoundingClientRect().top;
+  });
+  document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    root.style.left = e.clientX - offsetX + "px";
+    root.style.top = e.clientY - offsetY + "px";
+  });
+  document.addEventListener("mouseup", () => {
+    dragging = false;
+  });
+
+  // Minimize
+  let minimized = false;
+  minBtn.onclick = () => {
+    if (!minimized) {
+      contentRow.style.opacity = "0";
+      setTimeout(() => {
+        contentRow.style.display = "none";
+        root.style.height = "70px";
+        minBtn.textContent = "+";
+        minimized = true;
+      }, 160);
+    } else {
+      contentRow.style.display = "flex";
+      setTimeout(() => {
+        contentRow.style.opacity = "1";
+        root.style.height = "520px";
+        minBtn.textContent = "–";
+        minimized = false;
+      }, 20);
+    }
+  };
+
+  // Fullscreen
+  let fullscreen = false;
+  fullBtn.onclick = () => {
+    if (!fullscreen) {
+      Object.assign(root.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        borderRadius: "0"
+      });
+      fullscreen = true;
+      fullBtn.textContent = "▣";
+    } else {
+      Object.assign(root.style, {
+        position: "absolute",
+        top: "100px",
+        left: "100px",
+        width: "820px",
+        height: "520px",
+        borderRadius: "18px"
+      });
+      fullscreen = false;
+      fullBtn.textContent = "□";
+    }
+  };
+
+  // Close
+  closeBtn.onclick = () => {
+    root.remove();
+  };
+
+  // Dock buttons + tabs
+  function styleDockButton(btn) {
+    Object.assign(btn.style, {
+      padding: "7px 16px",
+      borderRadius: "0",
+      border: "1px solid #00ff8840",
+      cursor: "pointer",
+      background:
+        "linear-gradient(135deg, #050608, #07110b)",
+      color: "#eafff5",
+      fontWeight: "600",
+      fontSize: "12px",
+      textTransform: "uppercase",
+      letterSpacing: "0.08em",
+      boxShadow: "0 0 10px #00ff8820",
+      textShadow: "0 0 4px #00ff88",
+      transition: "transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease, color 0.1s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 16px #00ff88";
+      btn.style.background =
+        "linear-gradient(135deg, #07110b, #0f2b1a)";
+      btn.style.color = "#ffffff";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0)";
+      btn.style.boxShadow = "0 0 10px #00ff8820";
+      btn.style.background =
+        "linear-gradient(135deg, #050608, #07110b)";
+      btn.style.color = "#eafff5";
+    };
+    btn.onmousedown = () => {
+      btn.style.transform = "translateY(1px) scale(0.97)";
+      btn.style.boxShadow = "0 0 6px #00ff88";
+    };
+    btn.onmouseup = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 16px #00ff88";
+    };
+  }
+
+  function registerTab(name, builder) {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    styleDockButton(btn);
+    btn.onclick = () => {
+      tabContent.innerHTML = "";
+      tabContent.appendChild(builder());
+    };
+    dock.appendChild(btn);
+  }
+
+  // Placeholder modules
+  function makePlaceholder(label, accent) {
+    const wrap = document.createElement("div");
+    Object.assign(wrap.style, {
+      width: "100%",
+      height: "100%",
+      borderRadius: "4px",
+      background:
+        "radial-gradient(circle at 0% 0%, " +
+        accent +
+        "33, #050608 70%)",
+      border: "1px solid " + accent + "55",
+      boxShadow: "0 0 18px " + accent + "33",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "18px",
+      fontWeight: "600",
+      color: "#eafff5",
+      textShadow: "0 0 6px " + accent
+    });
+    wrap.textContent = label;
+    return wrap;
+  }
+// Clickr
+function loadClickGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Clickr: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Snubtendo
+  function loadSnubtendoGUI() {
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://therealsnubby.com";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "22px",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+    });
+    wrapper.appendChild(iframe);
+    return wrapper;
+
+}
+
+// Disk
+function loadDiskGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Disk: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Chat
+function loadChatGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://tlk.io/sunset";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "22px",
+    boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+  });
+  wrapper.appendChild(iframe);
+  return wrapper;
+}
+
+registerTab("Clickr", loadClickGUI);
+registerTab("Snubtendo", loadSnubtendoGUI);
+registerTab("Disk", loadDiskGUI);
+registerTab("Chat", loadChatGUI);
+
+})();
+
