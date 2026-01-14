@@ -1,0 +1,389 @@
+(function () {
+  // Root
+  const root = document.createElement("div");
+  Object.assign(root.style, {
+    position: "absolute",
+    top: "120px",
+    left: "120px",
+    width: "820px",
+    height: "520px",
+    background: "linear-gradient(145deg, #0a0a0a, #1a1a1a)",
+    borderRadius: "18px",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 0 50px rgba(0,0,0,0.8)",
+    border: "2px solid rgba(255,255,255,0.08)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    color: "#e0e0e0",
+    zIndex: "99999"
+  });
+  document.body.appendChild(root);
+
+  // Titlebar
+  const titleBar = document.createElement("div");
+  Object.assign(titleBar.style, {
+    padding: "12px 20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    background: "linear-gradient(90deg, #0d0d0d, #1a1a1a)",
+    borderBottom: "1px solid rgba(255,255,255,0.08)",
+    cursor: "move",
+    fontSize: "15px",
+    letterSpacing: "0.05em",
+    textShadow: "0 0 6px rgba(255,255,255,0.15)"
+  });
+  root.appendChild(titleBar);
+
+  const titleText = document.createElement("div");
+  titleText.innerHTML =
+    `Noir — Obsidian Shell<br>` +
+    `<span style="font-size:11px; opacity:0.6;">drag through the shadows</span>`;
+  titleBar.appendChild(titleText);
+
+  // Controls
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.gap = "10px";
+  titleBar.appendChild(controls);
+
+  function noirButton(label, glow) {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+    Object.assign(btn.style, {
+      border: "1px solid " + glow,
+      borderRadius: "4px",
+      padding: "4px 12px",
+      minWidth: "28px",
+      background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
+      color: "#e0e0e0",
+      fontWeight: "600",
+      cursor: "pointer",
+      boxShadow: "0 0 10px " + glow + "22",
+      transition: "all 0.12s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 16px " + glow;
+      btn.style.background = "linear-gradient(145deg, #1a1a1a, #2a2a2a)";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0)";
+      btn.style.boxShadow = "0 0 10px " + glow + "22";
+      btn.style.background = "linear-gradient(145deg, #0d0d0d, #1a1a1a)";
+    };
+    btn.onmousedown = () => {
+      btn.style.transform = "translateY(1px) scale(0.96)";
+    };
+    btn.onmouseup = () => {
+      btn.style.transform = "translateY(-1px)";
+    };
+    return btn;
+  }
+
+  const minBtn = noirButton("–", "#888888");
+  const fullBtn = noirButton("□", "#aaaaaa");
+  const closeBtn = noirButton("×", "#ff4d4d");
+  controls.appendChild(minBtn);
+  controls.appendChild(fullBtn);
+  controls.appendChild(closeBtn);
+
+  // Content row
+  const contentRow = document.createElement("div");
+  Object.assign(contentRow.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "row",
+    padding: "10px 14px 16px 14px",
+    gap: "12px",
+    transition: "opacity 0.25s ease"
+  });
+  root.appendChild(contentRow);
+
+  // Main area
+  const mainArea = document.createElement("div");
+  Object.assign(mainArea.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    background: "linear-gradient(145deg, #111111, #1c1c1c)",
+    borderRadius: "14px",
+    boxShadow: "inset 0 0 20px rgba(0,0,0,0.6)",
+    padding: "10px",
+    border: "1px solid rgba(255,255,255,0.06)",
+    minWidth: "0"
+  });
+  contentRow.appendChild(mainArea);
+
+  // Dock
+  const dock = document.createElement("div");
+  Object.assign(dock.style, {
+    width: "94%",
+    height: "60px",
+    background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
+    borderRadius: "10px",
+    border: "1px solid rgba(255,255,255,0.06)",
+    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "12px"
+  });
+  mainArea.appendChild(dock);
+
+  // Tab content
+  const tabContent = document.createElement("div");
+  Object.assign(tabContent.style, {
+    flex: "1",
+    width: "100%",
+    borderRadius: "10px",
+    background: "linear-gradient(145deg, #111111, #1c1c1c)",
+    border: "1px solid rgba(255,255,255,0.06)",
+    boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)",
+    padding: "12px",
+    overflow: "hidden"
+  });
+  mainArea.appendChild(tabContent);
+
+  // Notes panel
+  const notes = document.createElement("div");
+  Object.assign(notes.style, {
+    width: "210px",
+    background: "linear-gradient(180deg, #0d0d0d, #1a1a1a)",
+    borderRadius: "10px",
+    border: "1px solid rgba(255,255,255,0.06)",
+    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+    padding: "12px 14px",
+    fontSize: "12px",
+    lineHeight: "1.5",
+    color: "#cccccc",
+    whiteSpace: "pre-line"
+  });
+  notes.textContent =
+    "Noir profile:\n" +
+    "- Obsidian glass\n" +
+    "- Chrome edges\n" +
+    "- Cinematic shadows\n\n" +
+    "Snubtendo ritual:\n" +
+    "- Start Learning\n" +
+    "- Password: funni\n" +
+    "- Leave Student ID empty";
+  contentRow.appendChild(notes);
+
+  // Dragging
+  let dragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+  titleBar.addEventListener("mousedown", (e) => {
+    dragging = true;
+    offsetX = e.clientX - root.getBoundingClientRect().left;
+    offsetY = e.clientY - root.getBoundingClientRect().top;
+  });
+  document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    root.style.left = e.clientX - offsetX + "px";
+    root.style.top = e.clientY - offsetY + "px";
+  });
+  document.addEventListener("mouseup", () => {
+    dragging = false;
+  });
+
+  // Minimize
+  let minimized = false;
+  minBtn.onclick = () => {
+    if (!minimized) {
+      contentRow.style.opacity = "0";
+      setTimeout(() => {
+        contentRow.style.display = "none";
+        root.style.height = "80px";
+        minBtn.textContent = "+";
+        minimized = true;
+      }, 200);
+    } else {
+      contentRow.style.display = "flex";
+      setTimeout(() => {
+        contentRow.style.opacity = "1";
+        root.style.height = "520px";
+        minBtn.textContent = "–";
+        minimized = false;
+      }, 20);
+    }
+  };
+
+  // Fullscreen
+  let fullscreen = false;
+  fullBtn.onclick = () => {
+    if (!fullscreen) {
+      Object.assign(root.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        borderRadius: "0"
+      });
+      fullscreen = true;
+      fullBtn.textContent = "▣";
+    } else {
+      Object.assign(root.style, {
+        position: "absolute",
+        top: "120px",
+        left: "120px",
+        width: "820px",
+        height: "520px",
+        borderRadius: "18px"
+      });
+      fullscreen = false;
+      fullBtn.textContent = "□";
+    }
+  };
+
+  // Close
+  closeBtn.onclick = () => {
+    root.remove();
+  };
+
+  // Dock buttons + tabs
+  function styleDockButton(btn) {
+    Object.assign(btn.style, {
+      padding: "8px 18px",
+      borderRadius: "6px",
+      border: "1px solid rgba(255,255,255,0.08)",
+      cursor: "pointer",
+      background: "linear-gradient(145deg, #0d0d0d, #1a1a1a)",
+      color: "#e0e0e0",
+      fontWeight: "600",
+      fontSize: "13px",
+      boxShadow: "0 0 14px rgba(0,0,0,0.5)",
+      transition: "all 0.12s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px)";
+      btn.style.boxShadow = "0 0 20px rgba(255,255,255,0.15)";
+      btn.style.background = "linear-gradient(145deg, #1a1a1a, #2a2a2a)";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0)";
+      btn.style.boxShadow = "0 0 14px rgba(0,0,0,0.5)";
+      btn.style.background = "linear-gradient(145deg, #0d0d0d, #1a1a1a)";
+    };
+  }
+
+  function registerTab(name, builder) {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    styleDockButton(btn);
+    btn.onclick = () => {
+      tabContent.innerHTML = "";
+      tabContent.appendChild(builder());
+    };
+    dock.appendChild(btn);
+  }
+// Clickr
+function loadClickGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Clickr: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Snubtendo
+  function loadSnubtendoGUI() {
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://therealsnubby.com";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "22px",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+    });
+    wrapper.appendChild(iframe);
+    return wrapper;
+
+}
+
+// Disk
+function loadDiskGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Disk: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Chat
+function loadChatGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://tlk.io/sunset";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "22px",
+    boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+  });
+  wrapper.appendChild(iframe);
+  return wrapper;
+}
+
+  // Hook your real loaders here:
+  registerTab("Clickr", loadClickGUI);
+  registerTab("Snubtendo", loadSnubtendoGUI);
+  registerTab("Disk", loadDiskGUI);
+  registerTab("Chat", loadChatGUI);
+
+})();
+
