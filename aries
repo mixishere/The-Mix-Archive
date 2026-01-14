@@ -1,0 +1,387 @@
+(function () {
+  // Root
+  const root = document.createElement("div");
+  Object.assign(root.style, {
+    position: "absolute",
+    top: "120px",
+    left: "120px",
+    width: "820px",
+    height: "520px",
+    background: "linear-gradient(145deg, #1a0f2a, #2a0f3a, #3a1a5a)",
+    borderRadius: "34px",
+    backdropFilter: "blur(16px)",
+    boxShadow: "0 0 70px rgba(140,60,255,0.45)",
+    border: "3px solid rgba(200,160,255,0.25)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+    color: "#f3e8ff",
+    zIndex: "99999"
+  });
+  document.body.appendChild(root);
+
+  // Titlebar
+  const titleBar = document.createElement("div");
+  Object.assign(titleBar.style, {
+    padding: "14px 22px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    background: "linear-gradient(90deg, #2a0f3a, #3a1a5a, #2a0f3a)",
+    borderBottom: "1px solid rgba(200,160,255,0.25)",
+    cursor: "move",
+    fontSize: "15px",
+    letterSpacing: "0.05em",
+    textShadow: "0 0 8px rgba(200,160,255,0.4)"
+  });
+  root.appendChild(titleBar);
+
+  const titleText = document.createElement("div");
+  titleText.innerHTML =
+    `Aries — Galaxy Shell<br>` +
+    `<span style="font-size:11px; opacity:0.7;">drag through the cosmos</span>`;
+  titleBar.appendChild(titleText);
+
+  // Controls
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.gap = "10px";
+  titleBar.appendChild(controls);
+
+  function ariesButton(label, glow) {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+    Object.assign(btn.style, {
+      border: "1px solid " + glow,
+      borderRadius: "10px",
+      padding: "6px 14px",
+      minWidth: "30px",
+      background: "linear-gradient(145deg, #2a0f3a, #3a1a5a)",
+      color: "#f3e8ff",
+      fontWeight: "600",
+      cursor: "pointer",
+      boxShadow: "0 0 14px " + glow + "55",
+      transition: "all 0.12s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px) scale(1.05)";
+      btn.style.boxShadow = "0 0 20px " + glow;
+      btn.style.background = "linear-gradient(145deg, #3a1a5a, #4a2a7a)";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0) scale(1)";
+      btn.style.boxShadow = "0 0 14px " + glow + "55";
+      btn.style.background = "linear-gradient(145deg, #2a0f3a, #3a1a5a)";
+    };
+    btn.onmousedown = () => {
+      btn.style.transform = "translateY(1px) scale(0.96)";
+    };
+    btn.onmouseup = () => {
+      btn.style.transform = "translateY(-1px) scale(1.05)";
+    };
+    return btn;
+  }
+
+  const minBtn = ariesButton("–", "#caa0ff");
+  const fullBtn = ariesButton("□", "#e0c4ff");
+  const closeBtn = ariesButton("×", "#ff66cc");
+  controls.appendChild(minBtn);
+  controls.appendChild(fullBtn);
+  controls.appendChild(closeBtn);
+
+  // Content row
+  const contentRow = document.createElement("div");
+  Object.assign(contentRow.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "row",
+    padding: "10px 14px 16px 14px",
+    gap: "12px",
+    transition: "opacity 0.25s ease"
+  });
+  root.appendChild(contentRow);
+
+  // Main area
+  const mainArea = document.createElement("div");
+  Object.assign(mainArea.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    background: "linear-gradient(145deg, #3a1a5a, #4a2a7a)",
+    borderRadius: "26px",
+    boxShadow: "inset 0 0 26px rgba(140,60,255,0.35)",
+    padding: "10px",
+    border: "2px solid rgba(200,160,255,0.25)",
+    minWidth: "0"
+  });
+  contentRow.appendChild(mainArea);
+
+  // Dock
+  const dock = document.createElement("div");
+  Object.assign(dock.style, {
+    width: "94%",
+    height: "64px",
+    background: "linear-gradient(145deg, #2a0f3a, #3a1a5a)",
+    borderRadius: "20px",
+    border: "2px solid rgba(200,160,255,0.25)",
+    boxShadow: "0 14px 30px rgba(0,0,0,0.35)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "12px"
+  });
+  mainArea.appendChild(dock);
+
+  // Tab content
+  const tabContent = document.createElement("div");
+  Object.assign(tabContent.style, {
+    flex: "1",
+    width: "100%",
+    borderRadius: "20px",
+    background: "linear-gradient(145deg, #f3e8ff, #e8d8ff)",
+    border: "2px solid rgba(200,160,255,0.25)",
+    boxShadow: "inset 0 0 26px rgba(140,60,255,0.25)",
+    padding: "12px",
+    overflow: "hidden"
+  });
+  mainArea.appendChild(tabContent);
+
+  // Notes panel
+  const notes = document.createElement("div");
+  Object.assign(notes.style, {
+    width: "210px",
+    background: "linear-gradient(180deg, #2a0f3a, #3a1a5a)",
+    borderRadius: "20px",
+    border: "2px solid rgba(200,160,255,0.25)",
+    boxShadow: "0 18px 34px rgba(0,0,0,0.35)",
+    padding: "12px 14px",
+    fontSize: "12px",
+    lineHeight: "1.5",
+    color: "#f3e8ff",
+    whiteSpace: "pre-line"
+  });
+  notes.textContent =
+    "Aries profile:\n" +
+    "- Galaxy purple\n" +
+    "- Nebula glow\n" +
+    "- Cosmic chrome\n\n" +
+    "Snubtendo ritual:\n" +
+    "- Start Learning\n" +
+    "- Password: funni\n" +
+    "- Leave Student ID empty";
+  contentRow.appendChild(notes);
+
+  // Dragging
+  let dragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+  titleBar.addEventListener("mousedown", (e) => {
+    dragging = true;
+    offsetX = e.clientX - root.getBoundingClientRect().left;
+    offsetY = e.clientY - root.getBoundingClientRect().top;
+  });
+  document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    root.style.left = e.clientX - offsetX + "px";
+    root.style.top = e.clientY - offsetY + "px";
+  });
+  document.addEventListener("mouseup", () => {
+    dragging = false;
+  });
+
+  // Minimize
+  let minimized = false;
+  minBtn.onclick = () => {
+    if (!minimized) {
+      contentRow.style.opacity = "0";
+      setTimeout(() => {
+        contentRow.style.display = "none";
+        root.style.height = "80px";
+        minBtn.textContent = "+";
+        minimized = true;
+      }, 200);
+    } else {
+      contentRow.style.display = "flex";
+      setTimeout(() => {
+        contentRow.style.opacity = "1";
+        root.style.height = "520px";
+        minBtn.textContent = "–";
+        minimized = false;
+      }, 20);
+    }
+  };
+
+  // Fullscreen
+  let fullscreen = false;
+  fullBtn.onclick = () => {
+    if (!fullscreen) {
+      Object.assign(root.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        borderRadius: "0"
+      });
+      fullscreen = true;
+      fullBtn.textContent = "▣";
+    } else {
+      Object.assign(root.style, {
+        position: "absolute",
+        top: "120px",
+        left: "120px",
+        width: "820px",
+        height: "520px",
+        borderRadius: "34px"
+      });
+      fullscreen = false;
+      fullBtn.textContent = "□";
+    }
+  };
+
+  // Close
+  closeBtn.onclick = () => {
+    root.remove();
+  };
+
+  // Dock buttons + tabs
+  function styleDockButton(btn) {
+    Object.assign(btn.style, {
+      padding: "8px 18px",
+      borderRadius: "14px",
+      border: "none",
+      cursor: "pointer",
+      background: "linear-gradient(145deg, #3a1a5a, #4a2a7a)",
+      color: "#f3e8ff",
+      fontWeight: "600",
+      fontSize: "13px",
+      boxShadow: "0 8px 18px rgba(0,0,0,0.25)",
+      transition: "all 0.12s ease"
+    });
+    btn.onmouseenter = () => {
+      btn.style.transform = "translateY(-1px) scale(1.04)";
+      btn.style.boxShadow = "0 12px 24px rgba(140,60,255,0.35)";
+    };
+    btn.onmouseleave = () => {
+      btn.style.transform = "translateY(0) scale(1)";
+      btn.style.boxShadow = "0 8px 18px rgba(0,0,0,0.25)";
+    };
+  }
+
+  function registerTab(name, builder) {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    styleDockButton(btn);
+    btn.onclick = () => {
+      tabContent.innerHTML = "";
+      tabContent.appendChild(builder());
+    };
+    dock.appendChild(btn);
+  }
+// Clickr
+function loadClickGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Clickr: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Snubtendo
+  function loadSnubtendoGUI() {
+    const wrapper = document.createElement("div");
+    Object.assign(wrapper.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://therealsnubby.com";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "22px",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+    });
+    wrapper.appendChild(iframe);
+    return wrapper;
+
+}
+
+// Disk
+function loadDiskGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+    .then((res) => res.text())
+    .then((code) => {
+      eval(code);
+    })
+    .catch((err) => {
+      const msg = document.createElement("div");
+      msg.textContent = "Failed to load Disk: " + err;
+      wrapper.appendChild(msg);
+    });
+  return wrapper;
+}
+
+// Chat
+function loadChatGUI() {
+  const wrapper = document.createElement("div");
+  Object.assign(wrapper.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  });
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://tlk.io/sunset";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "22px",
+    boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+  });
+  wrapper.appendChild(iframe);
+  return wrapper;
+}
+
+  // Hook your real loaders here:
+  registerTab("Clickr", loadClickGUI);
+  registerTab("Snubtendo", loadSnubtendoGUI);
+  registerTab("Disk", loadDiskGUI);
+  registerTab("Chat", loadChatGUI);
+
+})();
+
