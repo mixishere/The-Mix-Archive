@@ -215,33 +215,40 @@
     }
   };
 
-  // Fullscreen
-  let fullscreen = false;
-  fullBtn.onclick = () => {
-    if (!fullscreen) {
-      Object.assign(root.style, {
-        position: "fixed",
-        top: "0",
-        left: "0",
-        width: "100%",
-        height: "100%",
-        borderRadius: "0"
-      });
-      fullscreen = true;
-      fullBtn.textContent = "▣";
-    } else {
-      Object.assign(root.style, {
-        position: "absolute",
-        top: "120px",
-        left: "120px",
-        width: "820px",
-        height: "520px",
-        borderRadius: "28px"
-      });
-      fullscreen = false;
-      fullBtn.textContent = "□";
-    }
-  };
+// Fullscreen only the iframe
+let fullscreen = false;
+fullBtn.onclick = () => {
+  const iframe = document.querySelector("iframe");
+
+  if (!iframe) return;
+
+  if (!fullscreen) {
+    Object.assign(iframe.style, {
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "100vw",
+      height: "100vh",
+      borderRadius: "0",
+      zIndex: "9999"
+    });
+    fullscreen = true;
+    fullBtn.textContent = "▣";
+  } else {
+    Object.assign(iframe.style, {
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      borderRadius: "12px",
+      top: "0",
+      left: "0",
+      zIndex: "1"
+    });
+    fullscreen = false;
+    fullBtn.textContent = "□";
+  }
+};
+
 
   // Close
   closeBtn.onclick = () => {
@@ -272,43 +279,51 @@
     };
   }
 
-  function registerTab(name, builder) {
-    const btn = document.createElement("button");
-    btn.textContent = name;
-    styleDockButton(btn);
-    btn.onclick = () => {
-      tabContent.innerHTML = "";
-      tabContent.appendChild(builder());
-    };
-    dock.appendChild(btn);
-  }
-// Clickr
-function loadClickGUI() {
-  const wrapper = document.createElement("div");
-  Object.assign(wrapper.style, {
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    height: "100%"
-  });
-  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
-    .then((res) => res.text())
-    .then((code) => {
-      eval(code);
-    })
-    .catch((err) => {
-      const msg = document.createElement("div");
-      msg.textContent = "Failed to load Clickr: " + err;
-      wrapper.appendChild(msg);
-    });
-  return wrapper;
+ const tabCache = {};
+let currentTab = null;
+
+function registerTab(name, builder) {
+  const btn = document.createElement("button");
+  btn.textContent = name;
+  styleDockButton(btn);
+
+  btn.onclick = () => {
+
+    // hide current tab
+    if (currentTab && tabCache[currentTab]) {
+      tabCache[currentTab].style.display = "none";
+    }
+
+    // load if first time
+    if (!tabCache[name]) {
+      const wrapper = document.createElement("div");
+      Object.assign(wrapper.style, {
+        width: "100%",
+        height: "100%",
+        display: "none"
+      });
+
+      const moduleWindow = builder();
+      wrapper.appendChild(moduleWindow);
+
+      tabCache[name] = wrapper;
+      tabContent.appendChild(wrapper);
+    }
+
+    // show tab
+    tabCache[name].style.display = "flex";
+    currentTab = name;
+  };
+
+  dock.appendChild(btn);
 }
 
-// Snubtendo
-  function loadSnubtendoGUI() {
-    const wrapper = document.createElement("div");
-    Object.assign(wrapper.style, {
+   // ============================
+  // MODULE: CLICKR
+  // ============================
+  function loadClickrGUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
       flex: "1",
       display: "flex",
       flexDirection: "column",
@@ -317,71 +332,344 @@ function loadClickGUI() {
       width: "100%",
       height: "100%"
     });
+
+    fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/clickr.js")
+      .then(r => r.text())
+      .then(c => eval(c))
+      .catch(err => {
+        const m = document.createElement("div");
+        m.textContent = "Failed to load Clickr: " + err;
+        m.style.color = "#E74C3C";
+        w.appendChild(m);
+      });
+
+    return w;
+  }
+
+  // ============================
+  // MODULE: SNUBTENDO
+  // ============================
+  function loadSnubtendoGUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+
     const iframe = document.createElement("iframe");
     iframe.src = "https://therealsnubby.com";
     Object.assign(iframe.style, {
       width: "100%",
       height: "100%",
       border: "none",
-      borderRadius: "22px",
-      boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+      borderRadius: "12px"
     });
-    wrapper.appendChild(iframe);
-    return wrapper;
 
-}
+    w.appendChild(iframe);
+    return w;
+  }
 
-// Disk
-function loadDiskGUI() {
-  const wrapper = document.createElement("div");
-  Object.assign(wrapper.style, {
+  // ============================
+  // MODULE: DISK
+  // ============================
+  function loadDiskGUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+
+    fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
+      .then(r => r.text())
+      .then(c => eval(c))
+      .catch(err => {
+        const m = document.createElement("div");
+        m.textContent = "Failed to load Disk: " + err;
+        m.style.color = "#E74C3C";
+        w.appendChild(m);
+      });
+
+    return w;
+  }
+
+  // ============================
+  // MODULE: CHAT
+  // ============================
+  function loadChatGUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+      height: "100%"
+    });
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://tlk.io/sunset";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "12px"
+    });
+
+    w.appendChild(iframe);
+    return w;
+  }
+
+  // ============================
+  // MODULE: HVX
+  // ============================
+  function loadHVXGUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://hvxwlrlkbj.itafricagroup.com/";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "12px"
+    });
+
+    w.appendChild(iframe);
+    return w;
+  }
+
+  // ============================
+  // MODULE: SH52
+  // ============================
+  function loadSH52GUI(){
+    const w = document.createElement("div");
+    Object.assign(w.style, {
+      flex: "1",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%"
+    });
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://sh52.lotsoflearning.shop/";
+    Object.assign(iframe.style, {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      borderRadius: "12px"
+    });
+
+    w.appendChild(iframe);
+    return w;
+  }
+// ============================
+// MODULE: 3E3C
+// ============================
+function load3E3CGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
     flex: "1",
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     width: "100%",
     height: "100%"
   });
-  fetch("https://raw.githubusercontent.com/mixishere/The-Mix-Archive/main/disk.js")
-    .then((res) => res.text())
-    .then((code) => {
-      eval(code);
-    })
-    .catch((err) => {
-      const msg = document.createElement("div");
-      msg.textContent = "Failed to load Disk: " + err;
-      wrapper.appendChild(msg);
-    });
-  return wrapper;
-}
 
-// Chat
-function loadChatGUI() {
-  const wrapper = document.createElement("div");
-  Object.assign(wrapper.style, {
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    height: "100%"
-  });
   const iframe = document.createElement("iframe");
-  iframe.src = "https://tlk.io/sunset";
+  iframe.src = "https://3e3c.org/";
   Object.assign(iframe.style, {
     width: "100%",
     height: "100%",
     border: "none",
-    borderRadius: "22px",
-    boxShadow: "0 10px 24px rgba(0,0,0,0.6)"
+    borderRadius: "12px"
   });
-  wrapper.appendChild(iframe);
-  return wrapper;
+
+  w.appendChild(iframe);
+  return w;
+}
+// ============================
+// MODULE: LEARNSPHERE
+// ============================
+function loadLearnSphereGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%"
+  });
+
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://learn-sphere.info/";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "12px"
+  });
+
+  w.appendChild(iframe);
+
+  return w;
+}
+// ============================
+// MODULE: IXLROCKS
+// ============================
+function loadIXLRocksGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%"
+  });
+
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://ixl.rocks/";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "12px"
+  });
+
+  w.appendChild(iframe);
+  return w;
 }
 
-  // Hook your real loaders here:
-  registerTab("Clickr", loadClickGUI);
-  registerTab("Snubtendo", loadSnubtendoGUI);
-  registerTab("Disk", loadDiskGUI);
-  registerTab("Chat", loadChatGUI);
+// ============================
+// MODULE: IMAGINELEARNING
+// ============================
+function loadImagineLearningGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%"
+  });
 
-})();
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://learnabouthardadvanced.imaginelearningmath.com/";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "12px"
+  });
+
+  w.appendChild(iframe);
+  return w;
+}
+
+// ============================
+// MODULE: WILDCARD
+// ============================
+function loadWildcardGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%"
+  });
+
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://wildcard.arbys-tacobelljobs.com/";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "12px"
+  });
+
+  w.appendChild(iframe);
+  return w;
+}
+
+// ============================
+// MODULE: PRAGERU
+// ============================
+function loadPragerUGUI(){
+  const w = document.createElement("div");
+  Object.assign(w.style, {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%"
+  });
+
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://prageru-server.s3.amazonaws.com/";
+  Object.assign(iframe.style, {
+    width: "100%",
+    height: "100%",
+    border: "none",
+    borderRadius: "12px"
+  });
+
+  w.appendChild(iframe);
+  return w;
+}
+
+
+
+
+// ============================
+// REGISTER ALL TABS
+// ============================
+registerTab("Clickr", loadClickrGUI);
+registerTab("Snubtendo", loadSnubtendoGUI);
+registerTab("Disk", loadDiskGUI);
+registerTab("Chat", loadChatGUI);
+registerTab("HVX", loadHVXGUI);
+registerTab("SH52", loadSH52GUI);
+registerTab("3e3c", load3E3CGUI);
+registerTab("LearnSphere", loadLearnSphereGUI);
+registerTab("IXL Rocks", loadIXLRocksGUI);
+registerTab("ImagineLearning", loadImagineLearningGUI);
+registerTab("Wildcard", loadWildcardGUI);
+registerTab("PragerU", loadPragerUGUI);
+
+
+
+})(); // 67777
 
